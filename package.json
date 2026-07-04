@@ -1,0 +1,14 @@
+{
+  "name": "portfolio-cms",
+  "version": "1.0.0",
+  "description": "Full-stack Portfolio CMS — Admin + Public Site",
+  "scripts": {
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "seed": "cd server && npm run seed",
+    "install:all": "cd client && npm install && cd ../server && npm install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

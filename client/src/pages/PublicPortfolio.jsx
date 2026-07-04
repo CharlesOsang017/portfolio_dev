@@ -1,0 +1,592 @@
+import { useState, useEffect, useRef } from 'react';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { IoIosSend } from "react-icons/io";
+import { FaFax } from "react-icons/fa";
+
+
+import { FiExternalLink, FiMail, FiMapPin } from "react-icons/fi";
+import { CiMenuBurger } from "react-icons/ci";
+import api from '../services/api';
+import { useTheme } from '../context/ThemeContext';
+import { ArrowRight, Briefcase, ChevronDown, Code, Mail, MapPin, Menu, Moon, Send, Star, Sun, X } from 'lucide-react';
+
+// ── Utility ─────────────────────────────────────────────────────────────────
+const useVisible = (ref) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setVisible(true); }, { threshold: 0.1 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [ref]);
+  return visible;
+};
+
+// ── Section Wrapper ──────────────────────────────────────────────────────────
+const Section = ({ id, children, className = '' }) => {
+  const ref = useRef(null);
+  const visible = useVisible(ref);
+  return (
+    <section id={id} ref={ref} className={`transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} ${className}`}>
+      {children}
+    </section>
+  );
+};
+
+// ── NAVBAR ───────────────────────────────────────────────────────────────────
+const Navbar = ({ isAvailable }) => {
+  const { theme, toggleTheme } = useTheme();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+
+  const links = ['About', 'Projects', 'Experience', 'Skills', 'Contact'];
+
+  return (
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 dark:bg-gray-950/90 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800' : ''}`}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-black">Z</div>
+          <span className="font-bold text-gray-900 dark:text-white hidden sm:block">Portfolio</span>
+        </div>
+
+        {/* Desktop links */}
+        <div className="hidden md:flex items-center gap-8">
+          {links.map((l) => (
+            <a key={l} href={`#${l.toLowerCase()}`} className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              {l}
+            </a>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button onClick={toggleTheme} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            {theme === 'dark' ? <Sun size={16} className="text-gray-400" /> : <Moon size={16} className="text-gray-600" />}
+          </button>
+          {isAvailable && (
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse-dot"></div>
+              <span className="text-xs font-semibold text-green-700 dark:text-green-400">Available</span>
+            </div>
+          )}
+          <a href="#contact" className="hidden sm:flex items-center gap-1.5 px-4 py-2 text-sm font-semibold bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 transition-opacity">
+            Hire Me
+          </a>
+          <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="md:hidden bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 px-4 py-4 animate-fade-in">
+          {links.map((l) => (
+            <a key={l} href={`#${l.toLowerCase()}`} onClick={() => setMobileOpen(false)}
+              className="block py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              {l}
+            </a>
+          ))}
+          <a href="#contact" className="mt-3 block text-center px-4 py-2.5 text-sm font-semibold bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl">
+            Hire Me
+          </a>
+        </div>
+      )}
+    </nav>
+  );
+};
+
+// ── HERO ─────────────────────────────────────────────────────────────────────
+const Hero = ({ data }) => (
+  <section id="about" className="relative min-h-screen hero-gradient flex items-center overflow-hidden">
+    {/* Background glow */}
+    <div className="absolute inset-0 hero-glow pointer-events-none" />
+
+    {/* Floating orbs */}
+    <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl float-1 pointer-events-none" />
+    <div className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl float-2 pointer-events-none" />
+
+    <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-16 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+      {/* Text */}
+      <div className="flex-1 text-center lg:text-left">
+        {data?.isAvailable && (
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 mb-6 animate-fade-in">
+            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse-dot"></div>
+            <span className="text-xs font-semibold text-green-300 uppercase tracking-widest">Available for Work</span>
+          </div>
+        )}
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-gray-800 dark:text-gray-300 leading-tight mb-6 animate-fade-in">
+          {data?.mainHeadline || "Hello, I'm a Developer"}
+        </h1>
+        <p className="text-lg text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 animate-fade-in">
+          {data?.subHeadline || 'Building extraordinary digital experiences.'}
+        </p>
+        <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start animate-fade-in">
+          <a href="#projects" className="flex items-center gap-2 px-6 py-3 bg-white text-gray-900 font-semibold rounded-xl hover:bg-gray-100 transition-colors">
+            View My Work
+            <ArrowRight size={16} />
+          </a>
+          <a href="#contact" className="flex items-center gap-2 px-6 py-3 bg-white/10 border border-white/20 text-white font-semibold rounded-xl hover:bg-white/20 transition-colors backdrop-blur-sm">
+            Get in Touch
+            <Send size={14} />
+          </a>
+        </div>
+
+        {/* Metrics */}
+        {data?.metrics && (
+          <div className="flex flex-wrap justify-center lg:justify-start gap-6 mt-12 animate-fade-in">
+            {[
+              { label: 'Projects', value: data.metrics.projectsCompleted },
+              { label: 'Years Exp', value: data.metrics.yearsExperience },
+              { label: 'OSS Contribs', value: data.metrics.openSourceContribs },
+              { label: 'Clients', value: data.metrics.happyClients },
+            ].map(({ label, value }) => (
+              <div key={label} className="text-center">
+                <div className="text-3xl font-black text-white">{value}+</div>
+                <div className="text-xs text-gray-400 mt-0.5">{label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Profile image */}
+      <div className="flex-shrink-0 animate-fade-in">
+        <div className="relative w-64 h-64 lg:w-80 lg:h-80">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 blur-2xl opacity-30 scale-105" />
+          <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-white/20 shadow-2xl">
+            {data?.profileImage ? (
+              <img src={data.profileImage} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center">
+                <span className="text-7xl font-black text-white/20">
+                  {data?.mainHeadline?.[data?.mainHeadline?.indexOf("'") + 1] || 'A'}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Scroll indicator */}
+    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/40 animate-bounce">
+      <ChevronDown size={20} />
+    </div>
+  </section>
+);
+
+// ── PROJECTS ─────────────────────────────────────────────────────────────────
+const Projects = ({ projects }) => (
+  <Section id="projects" className="py-24 bg-gray-50 dark:bg-gray-950">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <div className="text-center mb-14">
+        <div className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-3">
+          <Briefcase size={16} />
+          PORTFOLIO
+        </div>
+        <h2 className="text-4xl font-black text-gray-900 dark:text-white">Featured Projects</h2>
+        <p className="text-gray-500 dark:text-gray-400 mt-3 max-w-lg mx-auto">Engineering solutions that scale — from distributed systems to beautiful interfaces.</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {projects.filter((p) => p.isPublished).map((project, i) => (
+          <div key={project._id} className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+            <div className="aspect-video bg-gradient-to-br from-indigo-900 to-purple-900 relative overflow-hidden">
+              {project.heroImage ? (
+                <img src={project.heroImage} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Code size={40} className="text-white/20" />
+                </div>
+              )}
+              {project.isFeatured && (
+                <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 bg-yellow-400/90 rounded-full text-xs font-bold text-gray-900">
+                  <Star size={10} fill="currentColor" />
+                  Featured
+                </div>
+              )}
+              <div className="absolute top-3 left-3 px-2 py-1 bg-black/40 backdrop-blur-sm rounded-full text-xs text-white font-medium">
+                {project.category}
+              </div>
+            </div>
+            <div className="p-5">
+              <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                {project.title}
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">{project.description}</p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {project.techStack?.slice(0, 3).map((tag) => (
+                  <span key={tag} className="px-2 py-0.5 text-xs font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-md">
+                    {tag}
+                  </span>
+                ))}
+                {project.techStack?.length > 3 && (
+                  <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-md">
+                    +{project.techStack.length - 3}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-3">
+                {project.liveUrl && (
+                  <a href={project.liveUrl} target="_blank" rel="noreferrer"
+                    className="flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+                    <ExternalLink size={12} />
+                    Live Demo
+                  </a>
+                )}
+                {project.githubUrl && (
+                  <a href={project.githubUrl} target="_blank" rel="noreferrer"
+                    className="flex items-center gap-1 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:underline">
+                    <Github size={12} />
+                    GitHub
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Section>
+);
+
+// ── EXPERIENCE ───────────────────────────────────────────────────────────────
+const ExperienceSection = ({ experiences }) => (
+  <Section id="experience" className="py-24 bg-white dark:bg-gray-900">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6">
+      <div className="text-center mb-14">
+        <div className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-3">
+          <Briefcase size={16} />
+          CAREER
+        </div>
+        <h2 className="text-4xl font-black text-gray-900 dark:text-white">Experience</h2>
+      </div>
+
+      <div className="relative">
+        {/* Timeline line */}
+        <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-indigo-500 to-purple-500 hidden sm:block" />
+
+        <div className="space-y-8">
+          {experiences.map((exp, i) => (
+            <div key={exp._id} className="sm:pl-16 relative animate-slide-in">
+              {/* Dot */}
+              <div className="absolute left-3 top-6 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30 hidden sm:flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-white" />
+              </div>
+
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                <div className="flex items-start justify-between gap-4 mb-1">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{exp.jobTitle}</h3>
+                    <div className="flex items-center gap-2 mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+                      <span className="font-medium text-indigo-600 dark:text-indigo-400">{exp.company}</span>
+                      {exp.location && <><span>•</span><span>{exp.location}</span></>}
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500 text-right whitespace-nowrap">
+                    <div>{exp.startDate?.replace('-', ' ')}</div>
+                    <div className="text-indigo-500 font-medium">{exp.isPresent ? 'Present' : exp.endDate?.replace('-', ' ')}</div>
+                  </div>
+                </div>
+                {exp.responsibilities?.length > 0 && (
+                  <ul className="mt-4 space-y-1.5">
+                    {exp.responsibilities.map((r, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-indigo-500 mt-0.5 flex-shrink-0">▸</span>
+                        {r}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </Section>
+);
+
+// ── SKILLS ────────────────────────────────────────────────────────────────────
+const SkillsSection = ({ skills }) => {
+  const CATEGORIES = ['Frontend', 'Backend', 'Database', 'DevOps', 'Mobile', 'Design', 'Other'];
+  const grouped = CATEGORIES.reduce((acc, cat) => {
+    const s = skills.filter((sk) => sk.category === cat);
+    if (s.length) acc[cat] = s;
+    return acc;
+  }, {});
+
+  return (
+    <Section id="skills" className="py-24 bg-gray-50 dark:bg-gray-950">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-3">
+            <Code size={16} />
+            EXPERTISE
+          </div>
+          <h2 className="text-4xl font-black text-gray-900 dark:text-white">Technical Skills</h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {Object.entries(grouped).map(([category, catSkills]) => (
+            <div key={category} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
+              <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-5">{category}</h3>
+              <div className="space-y-4">
+                {catSkills.map((skill) => (
+                  <div key={skill._id}>
+                    <div className="flex justify-between text-sm mb-1.5">
+                      <span className="font-semibold text-gray-800 dark:text-gray-200">{skill.name}</span>
+                      <span className="text-indigo-600 dark:text-indigo-400 font-bold">{skill.proficiency}%</span>
+                    </div>
+                    <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full skill-bar-fill"
+                        style={{ width: `${skill.proficiency}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Section>
+  );
+};
+
+// ── CONTACT ───────────────────────────────────────────────────────────────────
+const ContactSection = ({ contact }) => {
+  const [form, setForm] = useState({ senderName: '', senderEmail: '', subject: '', message: '' });
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSending(true);
+    try {
+      await api.post('/inquiries', form);
+      setSent(true);
+      setForm({ senderName: '', senderEmail: '', subject: '', message: '' });
+    } catch { alert('Failed to send. Please try again.'); }
+    finally { setSending(false); }
+  };
+
+  return (
+    <Section id="contact" className="py-24 bg-white dark:bg-gray-900">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-3">
+            <Mail size={16} />
+            CONTACT
+          </div>
+          <h2 className="text-4xl font-black text-gray-900 dark:text-white">Let's Work Together</h2>
+          <p className="text-gray-500 dark:text-gray-400 mt-3 max-w-md mx-auto">Have a project in mind? I'd love to hear from you. Send a message and I'll get back to you shortly.</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          {/* Left: info */}
+          <div>
+            <div className="space-y-4 mb-8">
+              {[
+                { icon: Mail, label: 'Email', value: contact?.email, href: `mailto:${contact?.email}` },
+                { icon: MapPin, label: 'Location', value: contact?.location },
+                { icon: FaLinkedin, label: 'LinkedIn', value: contact?.linkedinUrl, href: `https://${contact?.linkedinUrl}` },
+                { icon: FaGithub, label: 'GitHub', value: contact?.githubUrl, href: `https://${contact?.githubUrl}` },
+              ].filter((i) => i.value).map(({ icon: Icon, label, value, href }) => (
+                <a key={label} href={href} target={href ? '_blank' : undefined} rel="noreferrer"
+                  className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-all group">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/40 transition-colors flex-shrink-0">
+                    <Icon size={18} className="text-indigo-600 dark:text-indigo-400" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{label}</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">{value}</div>
+                  </div>
+                </a>
+              ))}
+            </div>
+
+            {/* Availability badge */}
+            {contact?.availability === 'selective' && (
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-100 dark:border-indigo-800/50">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse-dot"></div>
+                  <span className="text-xs font-bold text-green-600 dark:text-green-400 uppercase tracking-wide">Open for work</span>
+                </div>
+                {contact.customStatusMessage && (
+                  <p className="text-sm text-gray-600 dark:text-gray-400 italic">"{contact.customStatusMessage}"</p>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Right: form */}
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+            {sent ? (
+              <div className="h-full flex flex-col items-center justify-center text-center py-12">
+                <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4">
+                  <Send size={24} className="text-green-600 dark:text-green-400" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Message Sent!</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">I'll get back to you as soon as possible.</p>
+                <button onClick={() => setSent(false)} className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+                  Send another message
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Your Name</label>
+                    <input
+                      type="text" required
+                      value={form.senderName}
+                      onChange={(e) => setForm({ ...form, senderName: e.target.value })}
+                      placeholder="John Doe"
+                      className="w-full px-3 py-2.5 text-sm rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white outline-none focus:border-indigo-400 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Email</label>
+                    <input
+                      type="email" required
+                      value={form.senderEmail}
+                      onChange={(e) => setForm({ ...form, senderEmail: e.target.value })}
+                      placeholder="you@example.com"
+                      className="w-full px-3 py-2.5 text-sm rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white outline-none focus:border-indigo-400 transition-colors"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Subject</label>
+                  <input
+                    type="text" required
+                    value={form.subject}
+                    onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                    placeholder="Project collaboration"
+                    className="w-full px-3 py-2.5 text-sm rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white outline-none focus:border-indigo-400 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Message</label>
+                  <textarea
+                    rows={5} required
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    placeholder="Tell me about your project..."
+                    className="w-full px-3 py-2.5 text-sm rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white outline-none focus:border-indigo-400 transition-colors resize-none"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+                >
+                  <Send size={15} />
+                  {sending ? 'Sending...' : 'Send Message'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    </Section>
+  );
+};
+
+// ── FOOTER ─────────────────────────────────────────────────────────────────
+const Footer = ({ contact }) => (
+  <footer className="bg-gray-950 dark:bg-black text-gray-400 py-10">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-black">Z</div>
+        <span className="text-sm font-medium text-gray-300">Portfolio</span>
+      </div>
+      <p className="text-xs text-center">© {new Date().getFullYear()} · Built with React, TailwindCSS & Express</p>
+      <div className="flex items-center gap-3">
+        {contact?.linkedinUrl && (
+          <a href={`https://${contact.linkedinUrl}`} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
+            <FaLinkedin size={18} />
+          </a>
+        )}
+        {contact?.githubUrl && (
+          <a href={`https://${contact.githubUrl}`} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
+            <FaGithub size={18} />
+          </a>
+        )}
+        {contact?.email && (
+          <a href={`mailto:${contact.email}`} className="hover:text-white transition-colors">
+            <Mail size={18} />
+          </a>
+        )}
+      </div>
+    </div>
+  </footer>
+);
+
+// ── MAIN COMPONENT ────────────────────────────────────────────────────────────
+const PublicPortfolio = () => {
+  const [data, setData] = useState({ home: null, projects: [], experiences: [], skills: [], contact: null });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [homeRes, projRes, expRes, skillRes, contactRes] = await Promise.all([
+          api.get('/home'),
+          api.get('/projects'),
+          api.get('/experience'),
+          api.get('/skills'),
+          api.get('/contact'),
+        ]);
+        setData({
+          home: homeRes.data,
+          projects: projRes.data,
+          experiences: expRes.data,
+          skills: skillRes.data,
+          contact: contactRes.data,
+        });
+        // Track portfolio view
+        api.post('/home/view').catch(() => {});
+      } catch (e) {
+        console.error('Failed to load portfolio data', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen hero-gradient flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center animate-pulse">
+            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400" />
+          </div>
+          <p className="text-white/60 text-sm">Loading portfolio...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+      <Navbar isAvailable={data.home?.isAvailable} />
+      <Hero data={data.home} />
+      <Projects projects={data.projects} />
+      <ExperienceSection experiences={data.experiences} />
+      <SkillsSection skills={data.skills} />
+      <ContactSection contact={data.contact} />
+      <Footer contact={data.contact} />
+    </div>
+  );
+};
+
+export default PublicPortfolio;
