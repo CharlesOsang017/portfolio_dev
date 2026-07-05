@@ -477,8 +477,8 @@ const ContactSection = ({ contact }) => {
   };
 
   return (
-    <Section id="contact" className="py-24 bg-white dark:bg-gray-900">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+    <Section id="contact" className="py-24  dark:bg-black">
+      <div className="max-w-5xl  mx-auto px-4 sm:px-6">
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-3">
             <Mail size={16} />
@@ -526,7 +526,7 @@ const ContactSection = ({ contact }) => {
           </div>
 
           {/* Right: form */}
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+          <div className="bg-gray-50 dark:bg-black rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
             {sent ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-12">
                 <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4">
@@ -585,7 +585,7 @@ const ContactSection = ({ contact }) => {
                 <button
                   type="submit"
                   disabled={sending}
-                  className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-zinc-800 to-gray-700 text-white font-semibold rounded-xl hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
                 >
                   <Send size={15} />
                   {sending ? 'Sending...' : 'Send Message'}
