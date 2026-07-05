@@ -52,8 +52,8 @@ const Topbar = ({ placeholder = 'Search...', onMenuToggle }) => {
           title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
         >
           {theme === 'dark'
-            ? <Sun size={18} className="text-gray-400 hover:text-yellow-400 transition-colors" />
-            : <Moon size={18} className="text-gray-600 hover:text-indigo-600 transition-colors" />
+            ? <Sun size={18} className="text-gray-400 hover:text-yellow-400 transition-colors cursor-pointer" />
+            : <Moon size={18} className="text-gray-600 hover:text-indigo-600 transition-colors cursor-pointer" />
           }
         </button>
 

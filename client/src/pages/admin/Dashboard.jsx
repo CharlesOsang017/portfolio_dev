@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { PenLine, Briefcase, AlertCircle, Upload, Rocket, Calendar, Code, Smile, Save, RefreshCw } from 'lucide-react';
+import { PenLine, Briefcase, AlertCircle, Upload, Rocket, Calendar, Code, Smile, Save, RefreshCw, FileText } from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 
@@ -16,13 +16,17 @@ const Dashboard = () => {
     subHeadline: '',
     isAvailable: true,
     profileImage: '',
+    resumeUrl: '', // Added resume url tracking
     metrics: { projectsCompleted: 0, yearsExperience: 0, openSourceContribs: 0, happyClients: 0 },
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [savedData, setSavedData] = useState(null);
+  
+  // Separate refs for image and resume files
   const fileInputRef = useRef(null);
+  const resumeInputRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -67,6 +71,25 @@ const Dashboard = () => {
       toast.success('Image uploaded!');
     } catch {
       toast.error('Upload failed');
+    }
+  };
+
+  // New handler for resume PDF files
+  const handleResumeUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const { data } = await api.post('/assets/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      handleChange('resumeUrl', data.url);
+      toast.success('Resume uploaded!');
+    } catch {
+      toast.error('Resume upload failed');
     }
   };
 
@@ -217,6 +240,48 @@ const Dashboard = () => {
               Replace Image
             </button>
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+          </div>
+
+          {/* NEW Resume Upload Section */}
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5">
+            <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-3">Resume Document</h2>
+            <div className="bg-gray-50 dark:bg-gray-800 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-3 flex flex-col items-center justify-center min-h-[120px]">
+              {form.resumeUrl ? (
+                <div className="flex flex-col items-center gap-2">
+                  <FileText size={32} className="text-indigo-500" />
+                  <span className="text-xs text-gray-900 dark:text-white font-medium text-center break-all px-2 line-clamp-1">
+                    {form.resumeUrl.split('/').pop()}
+                  </span>
+                  <a 
+                    href={form.resumeUrl} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="text-[11px] text-indigo-500 hover:underline"
+                  >
+                    View Current Document
+                  </a>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2 text-gray-400">
+                  <Upload size={28} />
+                  <span className="text-xs text-center">No resume uploaded yet</span>
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-gray-400 text-center mb-3">Accepted format: PDF only.</p>
+            <button
+              onClick={() => resumeInputRef.current?.click()}
+              className="w-full py-2 text-sm font-medium border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors"
+            >
+              {form.resumeUrl ? 'Replace Resume' : 'Upload Resume'}
+            </button>
+            <input 
+              ref={resumeInputRef} 
+              type="file" 
+              accept=".pdf,application/pdf" 
+              className="hidden" 
+              onChange={handleResumeUpload} 
+            />
           </div>
 
           {/* Site Preview */}

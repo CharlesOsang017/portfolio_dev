@@ -55,24 +55,6 @@ h1, h2, h3 {
 .animate-slide-in { animation: slideIn 0.25s ease-out; }
 .animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
 
-/* Hero gradient text */
-/* .gradient-text {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-} */
-
-/* Glass effect */
-/* .glass {
-  backdrop-filter: blur(12px);
-  background: rgba(255,255,255,0.7);
-  border: 1px solid rgba(255,255,255,0.5);
-}
-.dark .glass {
-  background: rgba(17,24,39,0.7);
-  border: 1px solid rgba(255,255,255,0.08);
-} */
 
 /* Toggle switch */
 .toggle-track {

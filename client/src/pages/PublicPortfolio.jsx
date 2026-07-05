@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { FaAddressCard, FaGithub, FaLinkedin } from 'react-icons/fa';
 import { IoIosSend } from "react-icons/io";
 import { FaFax } from "react-icons/fa";
 
@@ -8,7 +8,7 @@ import { FiExternalLink, FiMail, FiMapPin } from "react-icons/fi";
 import { CiMenuBurger } from "react-icons/ci";
 import api from '../services/api';
 import { useTheme } from '../context/ThemeContext';
-import { ArrowRight, Briefcase, ChevronDown, Code, Mail, MapPin, Menu, Moon, Send, Star, Sun, X } from 'lucide-react';
+import { ArrowRight, Briefcase, CheckSquare, ChevronDown, Cloud, Code, Database, Download, Layers, Mail, Map, MapPin, Menu, Moon, Send, Settings, Star, Sun, Terminal, X } from 'lucide-react';
 
 // ── Utility ─────────────────────────────────────────────────────────────────
 const useVisible = (ref) => {
@@ -50,8 +50,8 @@ const Navbar = ({ isAvailable }) => {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 dark:bg-gray-950/90 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800' : ''}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-black">Z</div>
-          <span className="font-bold text-gray-900 dark:text-white hidden sm:block">Portfolio</span>
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white text-sm font-black">C</div>
+          <span className="font-bold text-gray-900 dark:text-white hidden sm:block">ChazDev</span>
         </div>
 
         {/* Desktop links */}
@@ -64,7 +64,7 @@ const Navbar = ({ isAvailable }) => {
         </div>
 
         <div className="flex items-center gap-2">
-          <button onClick={toggleTheme} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          <button onClick={toggleTheme} className="p-2 rounded-lg hover:bg-gray-100 cursor-pointer dark:hover:bg-gray-800 transition-colors">
             {theme === 'dark' ? <Sun size={16} className="text-gray-400" /> : <Moon size={16} className="text-gray-600" />}
           </button>
           {isAvailable && (
@@ -102,40 +102,42 @@ const Navbar = ({ isAvailable }) => {
 
 // ── HERO ─────────────────────────────────────────────────────────────────────
 const Hero = ({ data }) => (
-  <section id="about" className="relative min-h-screen hero-gradient flex items-center overflow-hidden">
+  <section id="about" className="relative min-h-screen flex items-center overflow-hidden">
     {/* Background glow */}
-    <div className="absolute inset-0 hero-glow pointer-events-none" />
+    <div className="absolute inset-0 pointer-events-none" />
 
     {/* Floating orbs */}
-    <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl float-1 pointer-events-none" />
-    <div className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl float-2 pointer-events-none" />
+    <div className="absolute top-1/4 right-1/4 w-64 h-64  rounded-full blur-3xl float-1 pointer-events-none" />
+    <div className="absolute bottom-1/4 left-1/4 w-48 h-48  rounded-full blur-3xl float-2 pointer-events-none" />
 
     <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-16 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
       {/* Text */}
       <div className="flex-1 text-center lg:text-left">
         {data?.isAvailable && (
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 mb-6 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800  mb-6 animate-fade-in">
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse-dot"></div>
-            <span className="text-xs font-semibold text-green-300 uppercase tracking-widest">Available for Work</span>
+            <span className="text-xs font-semibold text-green-500 uppercase tracking-widest">Available for Work</span>
           </div>
         )}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-gray-800 dark:text-gray-300 leading-tight mb-6 animate-fade-in">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-5xl font-black text-gray-800 dark:text-gray-300 leading-tight mb-6 animate-fade-in">
           {data?.mainHeadline || "Hello, I'm a Developer"}
         </h1>
-        <p className="text-lg text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 animate-fade-in">
+        <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 animate-fade-in">
           {data?.subHeadline || 'Building extraordinary digital experiences.'}
         </p>
         <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start animate-fade-in">
-          <a href="#projects" className="flex items-center gap-2 px-6 py-3 bg-white text-gray-900 font-semibold rounded-xl hover:bg-gray-100 transition-colors">
-            View My Work
-            <ArrowRight size={16} />
+          <a
+            href="/resume.pdf" // 1. Path to your actual resume file
+            download="My_Resume.pdf" // 2. Forces download and sets the filename
+            className="flex items-center text-xs gap-2 px-6 py-3 bg-gray-300 text-gray-900 rounded-xl hover:bg-gray-100 transition-colors"
+          >
+            <Download size={16} /> Download Resume
           </a>
-          <a href="#contact" className="flex items-center gap-2 px-6 py-3 bg-white/10 border border-white/20 text-white font-semibold rounded-xl hover:bg-white/20 transition-colors backdrop-blur-sm">
+          <a href="#contact" className="flex items-center gap-2 px-6 py-3 bg-gray-300 text-gray-900 rounded-xl hover:bg-gray-100 transition-colors text-xs font-semibold">
             Get in Touch
-            <Send size={14} />
+            <FaAddressCard size={14} />
           </a>
         </div>
-
         {/* Metrics */}
         {data?.metrics && (
           <div className="flex flex-wrap justify-center lg:justify-start gap-6 mt-12 animate-fade-in">
@@ -146,8 +148,8 @@ const Hero = ({ data }) => (
               { label: 'Clients', value: data.metrics.happyClients },
             ].map(({ label, value }) => (
               <div key={label} className="text-center">
-                <div className="text-3xl font-black text-white">{value}+</div>
-                <div className="text-xs text-gray-400 mt-0.5">{label}</div>
+                <div className="text-3xl font-black text-gray-900 dark:text-gray-300">{value}+</div>
+                <div className="text-xs text-gray-600 dark:text-gray-300 font-semibold mt-0.5">{label}</div>
               </div>
             ))}
           </div>
@@ -174,7 +176,7 @@ const Hero = ({ data }) => (
     </div>
 
     {/* Scroll indicator */}
-    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/40 animate-bounce">
+    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-900 dark:text-gray-300 animate-bounce">
       <ChevronDown size={20} />
     </div>
   </section>
@@ -313,53 +315,116 @@ const ExperienceSection = ({ experiences }) => (
 );
 
 // ── SKILLS ────────────────────────────────────────────────────────────────────
-const SkillsSection = ({ skills }) => {
-  const CATEGORIES = ['Frontend', 'Backend', 'Database', 'DevOps', 'Mobile', 'Design', 'Other'];
+const SkillsSection = ({ skills = [] }) => {
+  // 1. Core categories defined exactly as per design
+  const CATEGORIES = [
+    { icon: Terminal, name: 'Programming Languages' },
+    { icon: Settings, name: 'DevOps & Tools' },
+    { icon: Layers, name: 'JavaScript Libraries & Frameworks' },
+    { icon: Database, name: 'Web Frameworks' },
+    { icon: Cloud, name: 'Backend as a Service' },
+    { icon: CheckSquare, name: 'Testing' }
+  ];
+
+  // 2. Flexible grouping logic to prevent data from being filtered out
   const grouped = CATEGORIES.reduce((acc, cat) => {
-    const s = skills.filter((sk) => sk.category === cat);
-    if (s.length) acc[cat] = s;
+    const matchingSkills = skills.filter((sk) => {
+      if (!sk.category) return false;
+      
+      const dbCat = String(sk.category).toLowerCase().trim();
+      const targetCat = cat.name.toLowerCase().trim();
+      
+      // Matches even if your database says "Devops" instead of "DevOps & Tools"
+      return dbCat === targetCat || targetCat.includes(dbCat) || dbCat.includes(targetCat);
+    });
+
+    if (matchingSkills.length > 0) {
+      acc[cat.name] = {
+        icon: cat.icon,
+        items: matchingSkills
+      };
+    }
     return acc;
   }, {});
 
+  // Fallback: If nothing matched the strict categories, catch them in an "Other" block
+  const matchedSkillIds = new Set(
+    Object.values(grouped).flatMap(group => group.items.map(s => s._id))
+  );
+  const remainingSkills = skills.filter(sk => !matchedSkillIds.has(sk._id));
+  
+  if (remainingSkills.length > 0) {
+    grouped['Other Skills'] = {
+      icon: Terminal,
+      items: remainingSkills
+    };
+  }
+
+  // Double-check fallback: If still empty, display skills as a single list so something always renders
+  const hasGroupedData = Object.keys(grouped).length > 0;
+
   return (
-    <Section id="skills" className="py-24 bg-gray-50 dark:bg-gray-950">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+    <section id="skills" className="py-24 dark:bg-zinc-950 text-black dark:text-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        
+        {/* Header Section */}
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-3">
-            <Code size={16} />
-            EXPERTISE
-          </div>
-          <h2 className="text-4xl font-black text-gray-900 dark:text-white">Technical Skills</h2>
+          <h2 className="text-4xl font-bold mb-3">Technical Skills</h2>
+          <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto text-sm sm:text-base">
+            Comprehensive expertise across modern development stack with focus on scalable web applications and DevOps practices.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {Object.entries(grouped).map(([category, catSkills]) => (
-            <div key={category} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
-              <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-5">{category}</h3>
-              <div className="space-y-4">
-                {catSkills.map((skill) => (
-                  <div key={skill._id}>
-                    <div className="flex justify-between text-sm mb-1.5">
-                      <span className="font-semibold text-gray-800 dark:text-gray-200">{skill.name}</span>
-                      <span className="text-indigo-600 dark:text-indigo-400 font-bold">{skill.proficiency}%</span>
+        {/* Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {hasGroupedData ? (
+            Object.entries(grouped).map(([categoryName, data]) => {
+              const Icon = data.icon;
+              return (
+                <div 
+                  key={categoryName} 
+                  className="bg-zinc-50/50 dark:bg-zinc-950/50 backdrop-blur-sm rounded-2xl border border-zinc-800/80 p-6 flex flex-col justify-between"
+                >
+                  <div>
+                    {/* Category Title & Icon */}
+                    <div className="flex items-center gap-2.5 mb-5">
+                      <Icon size={18} className="text-zinc-900 dark:text-zinc-200" />
+                      <h3 className="text-base font-semibold tracking-wide">{categoryName}</h3>
                     </div>
-                    <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full skill-bar-fill"
-                        style={{ width: `${skill.proficiency}%` }}
-                      />
+                    
+                    {/* Skill Badges */}
+                    <div className="flex flex-wrap gap-2">
+                      {data.items.map((skill) => (
+                        <span
+                          key={skill._id || skill.name}
+                          className="px-3 py-1.5 bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-200 rounded-lg text-xs font-medium border border-zinc-700/40 hover:border-zinc-600 transition-colors duration-200"
+                        >
+                          {skill.name}
+                        </span>
+                      ))}
                     </div>
                   </div>
+                </div>
+              );
+            })
+          ) : (
+            /* Emergency Fallback UI if data structure is completely different */
+            <div className="col-span-full bg-zinc-900/50 rounded-2xl border border-zinc-800 p-6">
+              <div className="flex flex-wrap gap-2">
+                {skills.map((skill) => (
+                  <span key={skill._id || skill.name} className="px-3 py-1.5 bg-zinc-800 text-zinc-300 rounded-lg text-xs font-medium">
+                    {skill.name}
+                  </span>
                 ))}
               </div>
             </div>
-          ))}
+          )}
         </div>
+
       </div>
-    </Section>
+    </section>
   );
 };
-
 // ── CONTACT ───────────────────────────────────────────────────────────────────
 const ContactSection = ({ contact }) => {
   const [form, setForm] = useState({ senderName: '', senderEmail: '', subject: '', message: '' });
@@ -553,7 +618,7 @@ const PublicPortfolio = () => {
           contact: contactRes.data,
         });
         // Track portfolio view
-        api.post('/home/view').catch(() => {});
+        api.post('/home/view').catch(() => { });
       } catch (e) {
         console.error('Failed to load portfolio data', e);
       } finally {
@@ -580,9 +645,9 @@ const PublicPortfolio = () => {
     <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       <Navbar isAvailable={data.home?.isAvailable} />
       <Hero data={data.home} />
+      <SkillsSection skills={data.skills} />
       <Projects projects={data.projects} />
       <ExperienceSection experiences={data.experiences} />
-      <SkillsSection skills={data.skills} />
       <ContactSection contact={data.contact} />
       <Footer contact={data.contact} />
     </div>
