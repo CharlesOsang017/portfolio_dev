@@ -184,7 +184,7 @@ const Hero = ({ data }) => (
 
 // ── PROJECTS ─────────────────────────────────────────────────────────────────
 const Projects = ({ projects }) => (
-  <Section id="projects" className="py-24 bg-gray-50 dark:bg-gray-950">
+  <Section id="projects" className="py-24 bg-white dark:bg-gray-950">
     <div className="max-w-6xl mx-auto px-4 sm:px-6">
       <div className="text-center mb-14">
         <div className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-3">
@@ -234,18 +234,20 @@ const Projects = ({ projects }) => (
                 )}
               </div>
               <div className="flex items-center gap-3">
-                {project.liveUrl && (
-                  <a href={project.liveUrl} target="_blank" rel="noreferrer"
-                    className="flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
-                    <ExternalLink size={12} />
-                    Live Demo
-                  </a>
-                )}
+
                 {project.githubUrl && (
                   <a href={project.githubUrl} target="_blank" rel="noreferrer"
                     className="flex items-center gap-1 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:underline">
                     <FaGithub size={12} />
                     GitHub
+                  </a>
+                )}
+
+                {project.liveUrl && (
+                  <a href={project.liveUrl} target="_blank" rel="noreferrer"
+                    className="flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+                    <ExternalLink size={12} />
+                    Live Demo
                   </a>
                 )}
               </div>
@@ -262,7 +264,7 @@ const ExperienceSection = ({ experiences = [] }) => {
   return (
     <section id="experience" className="py-24 dark:bg-zinc-950 text-black dark:text-white overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
-        
+
         {/* Header Section */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 dark:text-zinc-400 text-zinc-700 font-semibold text-xs tracking-widest uppercase mb-3 dark:bg-zinc-900 bg-gray-100 border border-zinc-800 px-3 py-1 rounded-full">
@@ -279,8 +281,8 @@ const ExperienceSection = ({ experiences = [] }) => {
 
           <div className="space-y-10">
             {experiences.map((exp) => (
-              <div 
-                key={exp._id} 
+              <div
+                key={exp._id}
                 className="pl-10 sm:pl-16 relative group transition-all duration-300"
               >
                 {/* Glow Timeline Ring Indicator */}
@@ -288,17 +290,17 @@ const ExperienceSection = ({ experiences = [] }) => {
 
                 {/* Main Card */}
                 <div className=" dark:bg-zinc-900/40 bg-gray-100 backdrop-blur-sm rounded-2xl p-6 border border-zinc-800/80 hover:border-zinc-700/60 shadow-xl transition-all duration-300 hover:-translate-y-1">
-                  
+
                   {/* Header metadata layout */}
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4 pb-4 border-b border-zinc-800/60">
                     <div>
                       <h3 className="text-xl font-bold dark:text-white text-black transition-colors">
                         {exp.jobTitle}
                       </h3>
-                      
+
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 text-sm text-zinc-400">
                         <span className="font-semibold dark:text-indigo-400 text-indigo-900">{exp.company}</span>
-                        
+
                         {exp.location && (
                           <span className="flex items-center gap-1 dark:text-gray-400 text-gray-700">
                             <MapPin size={13} />
@@ -323,8 +325,8 @@ const ExperienceSection = ({ experiences = [] }) => {
                   {exp.responsibilities?.length > 0 && (
                     <ul className="space-y-2.5">
                       {exp.responsibilities.map((r, idx) => (
-                        <li 
-                          key={idx} 
+                        <li
+                          key={idx}
                           className="flex items-start gap-3 text-sm dark:text-zinc-300 text-zinc-700 leading-relaxed transition-colors"
                         >
                           {/* Elegant minimal line pointer */}
@@ -362,10 +364,10 @@ const SkillsSection = ({ skills = [] }) => {
   const grouped = CATEGORIES.reduce((acc, cat) => {
     const matchingSkills = skills.filter((sk) => {
       if (!sk.category) return false;
-      
+
       const dbCat = String(sk.category).toLowerCase().trim();
       const targetCat = cat.name.toLowerCase().trim();
-      
+
       // Matches even if your database says "Devops" instead of "DevOps & Tools"
       return dbCat === targetCat || targetCat.includes(dbCat) || dbCat.includes(targetCat);
     });
@@ -384,7 +386,7 @@ const SkillsSection = ({ skills = [] }) => {
     Object.values(grouped).flatMap(group => group.items.map(s => s._id))
   );
   const remainingSkills = skills.filter(sk => !matchedSkillIds.has(sk._id));
-  
+
   if (remainingSkills.length > 0) {
     grouped['Other Skills'] = {
       icon: Terminal,
@@ -398,7 +400,7 @@ const SkillsSection = ({ skills = [] }) => {
   return (
     <section id="skills" className="py-24 dark:bg-zinc-950 text-black dark:text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        
+
         {/* Header Section */}
         <div className="text-center mb-14">
           <h2 className="text-4xl font-bold mb-3">Technical Skills</h2>
@@ -413,8 +415,8 @@ const SkillsSection = ({ skills = [] }) => {
             Object.entries(grouped).map(([categoryName, data]) => {
               const Icon = data.icon;
               return (
-                <div 
-                  key={categoryName} 
+                <div
+                  key={categoryName}
                   className="bg-zinc-50/50 dark:bg-zinc-950/50 backdrop-blur-sm rounded-2xl border border-zinc-800/80 p-6 flex flex-col justify-between"
                 >
                   <div>
@@ -423,7 +425,7 @@ const SkillsSection = ({ skills = [] }) => {
                       <Icon size={18} className="text-zinc-900 dark:text-zinc-200" />
                       <h3 className="text-base font-semibold tracking-wide">{categoryName}</h3>
                     </div>
-                    
+
                     {/* Skill Badges */}
                     <div className="flex flex-wrap gap-2">
                       {data.items.map((skill) => (
