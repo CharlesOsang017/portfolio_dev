@@ -8,7 +8,7 @@ import { FiExternalLink, FiMail, FiMapPin } from "react-icons/fi";
 import { CiMenuBurger } from "react-icons/ci";
 import api from '../services/api';
 import { useTheme } from '../context/ThemeContext';
-import { ArrowRight, Briefcase, CheckSquare, ChevronDown, Cloud, Code, Database, Download, Layers, Mail, Map, MapPin, Menu, Moon, Send, Settings, Star, Sun, Terminal, X } from 'lucide-react';
+import { ArrowRight, Briefcase, Calendar, CheckSquare, ChevronDown, Cloud, Code, Database, Download, ExternalLink, Layers, Mail, Map, MapPin, Menu, Moon, Send, Settings, Star, Sun, Terminal, X } from 'lucide-react';
 
 // ── Utility ─────────────────────────────────────────────────────────────────
 const useVisible = (ref) => {
@@ -244,7 +244,7 @@ const Projects = ({ projects }) => (
                 {project.githubUrl && (
                   <a href={project.githubUrl} target="_blank" rel="noreferrer"
                     className="flex items-center gap-1 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:underline">
-                    <Github size={12} />
+                    <FaGithub size={12} />
                     GitHub
                   </a>
                 )}
@@ -258,61 +258,93 @@ const Projects = ({ projects }) => (
 );
 
 // ── EXPERIENCE ───────────────────────────────────────────────────────────────
-const ExperienceSection = ({ experiences }) => (
-  <Section id="experience" className="py-24 bg-white dark:bg-gray-900">
-    <div className="max-w-4xl mx-auto px-4 sm:px-6">
-      <div className="text-center mb-14">
-        <div className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-3">
-          <Briefcase size={16} />
-          CAREER
+const ExperienceSection = ({ experiences = [] }) => {
+  return (
+    <section id="experience" className="py-24 dark:bg-zinc-950 text-black dark:text-white overflow-hidden">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        
+        {/* Header Section */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 dark:text-zinc-400 text-zinc-700 font-semibold text-xs tracking-widest uppercase mb-3 dark:bg-zinc-900 bg-gray-100 border border-zinc-800 px-3 py-1 rounded-full">
+            <Briefcase size={14} className="dark:text-indigo-500 text-indigo-900" />
+            Career Journey
+          </div>
+          <h2 className="text-3xl font-black dark:text-white text-black tracking-tight">Work Experience</h2>
         </div>
-        <h2 className="text-4xl font-black text-gray-900 dark:text-white">Experience</h2>
-      </div>
 
-      <div className="relative">
-        {/* Timeline line */}
-        <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-indigo-500 to-purple-500 hidden sm:block" />
+        {/* Timeline Container */}
+        <div className="relative">
+          {/* Modern Minimal Vertical Timeline Line */}
+          <div className="absolute left-4 sm:left-6 top-2 bottom-2 w-[2px] bg-gradient-to-b from-gray-600 via-gray-600 to-gray-600 opacity-30 dark:bg-gradient-to-b dark:from-indigo-500 dark:via-purple-500 dark:to-transparent dark:opacity-30" />
 
-        <div className="space-y-8">
-          {experiences.map((exp, i) => (
-            <div key={exp._id} className="sm:pl-16 relative animate-slide-in">
-              {/* Dot */}
-              <div className="absolute left-3 top-6 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30 hidden sm:flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-white" />
-              </div>
+          <div className="space-y-10">
+            {experiences.map((exp) => (
+              <div 
+                key={exp._id} 
+                className="pl-10 sm:pl-16 relative group transition-all duration-300"
+              >
+                {/* Glow Timeline Ring Indicator */}
+                <div className="absolute left-2.5 sm:left-4 top-2.5 w-3.5 h-3.5 rounded-full dark:bg-zinc-950 bg-gray-300 border-2 dark:border-indigo-500 border-gray-400 shadow-[0_0_10px_rgba(99,102,241,0.5)] z-10 transition-transform duration-300 group-hover:scale-125 group-hover:border-purple-400" />
 
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
-                <div className="flex items-start justify-between gap-4 mb-1">
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{exp.jobTitle}</h3>
-                    <div className="flex items-center gap-2 mt-0.5 text-sm text-gray-500 dark:text-gray-400">
-                      <span className="font-medium text-indigo-600 dark:text-indigo-400">{exp.company}</span>
-                      {exp.location && <><span>•</span><span>{exp.location}</span></>}
+                {/* Main Card */}
+                <div className=" dark:bg-zinc-900/40 bg-gray-100 backdrop-blur-sm rounded-2xl p-6 border border-zinc-800/80 hover:border-zinc-700/60 shadow-xl transition-all duration-300 hover:-translate-y-1">
+                  
+                  {/* Header metadata layout */}
+                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4 pb-4 border-b border-zinc-800/60">
+                    <div>
+                      <h3 className="text-xl font-bold dark:text-white text-black transition-colors">
+                        {exp.jobTitle}
+                      </h3>
+                      
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 text-sm text-zinc-400">
+                        <span className="font-semibold dark:text-indigo-400 text-indigo-900">{exp.company}</span>
+                        
+                        {exp.location && (
+                          <span className="flex items-center gap-1 dark:text-gray-400 text-gray-700">
+                            <MapPin size={13} />
+                            {exp.location}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Modern Date Tag Box */}
+                    <div className="flex items-center gap-2 self-start md:self-auto dark:bg-zinc-800/60 dark:border-zinc-700/30 bg-gray-100/60 border border-zinc-700/30 px-3 py-1.5 rounded-xl text-xs font-medium text-zinc-300 shadow-inner">
+                      <Calendar size={13} className="dark:text-indigo-400 text-indigo-900" />
+                      <span className="dark:text-zinc-300 text-zinc-700">{exp.startDate?.replace('-', ' ')}</span>
+                      <span className="text-zinc-500">—</span>
+                      <span className={exp.isPresent ? "dark:text-emerald-400 text-emerald-900 font-semibold" : "dark:text-zinc-300 text-zinc-700"}>
+                        {exp.isPresent ? 'Present' : exp.endDate?.replace('-', ' ')}
+                      </span>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-400 dark:text-gray-500 text-right whitespace-nowrap">
-                    <div>{exp.startDate?.replace('-', ' ')}</div>
-                    <div className="text-indigo-500 font-medium">{exp.isPresent ? 'Present' : exp.endDate?.replace('-', ' ')}</div>
-                  </div>
+
+                  {/* Bullet Points / Responsibilities Description */}
+                  {exp.responsibilities?.length > 0 && (
+                    <ul className="space-y-2.5">
+                      {exp.responsibilities.map((r, idx) => (
+                        <li 
+                          key={idx} 
+                          className="flex items-start gap-3 text-sm dark:text-zinc-300 text-zinc-700 leading-relaxed transition-colors"
+                        >
+                          {/* Elegant minimal line pointer */}
+                          <span className="text-indigo-500 font-bold mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-indigo-500/80" />
+                          <span>{r}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
                 </div>
-                {exp.responsibilities?.length > 0 && (
-                  <ul className="mt-4 space-y-1.5">
-                    {exp.responsibilities.map((r, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <span className="text-indigo-500 mt-0.5 flex-shrink-0">▸</span>
-                        {r}
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+
       </div>
-    </div>
-  </Section>
-);
+    </section>
+  );
+};
 
 // ── SKILLS ────────────────────────────────────────────────────────────────────
 const SkillsSection = ({ skills = [] }) => {
@@ -646,8 +678,8 @@ const PublicPortfolio = () => {
       <Navbar isAvailable={data.home?.isAvailable} />
       <Hero data={data.home} />
       <SkillsSection skills={data.skills} />
-      <Projects projects={data.projects} />
       <ExperienceSection experiences={data.experiences} />
+      <Projects projects={data.projects} />
       <ContactSection contact={data.contact} />
       <Footer contact={data.contact} />
     </div>
