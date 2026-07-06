@@ -183,6 +183,11 @@ await Skill.create([
   { name: 'Firebase', category: 'Backend as a Service', order: 1 },
   { name: 'Appwrite', category: 'Backend as a Service', order: 2 },
 
+  // Databases
+  { name: 'PostgreSQL', category: 'Databases', order: 1 },
+  { name: 'MongoDB', category: 'Databases', order: 2 },
+  { name: 'Redis', category: 'Databases', order: 3 },
+
   // Testing
   { name: 'Jest', category: 'Testing', order: 1 }
 ]);

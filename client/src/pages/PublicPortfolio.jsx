@@ -421,7 +421,8 @@ const SkillsSection = ({ skills = [] }) => {
     { icon: Layers, name: 'JavaScript Libraries & Frameworks' },
     { icon: Database, name: 'Web Frameworks' },
     { icon: Cloud, name: 'Backend as a Service' },
-    { icon: CheckSquare, name: 'Testing' }
+    { icon: CheckSquare, name: 'Testing' },
+    { icon: Database, name: 'Databases' }
   ];
 
   // 2. High-performance precise array reduction & string normalization 
