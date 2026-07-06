@@ -13,6 +13,7 @@ const seed = async () => {
     await mongoose.connect(process.env.MONGO_URI);
     console.log('✅ Connected to MongoDB');
 
+    console.log("Clearing the database...")
     // Clear existing data
     await Promise.all([
       User.deleteMany({}),
@@ -22,8 +23,11 @@ const seed = async () => {
       Skill.deleteMany({}),
       Contact.deleteMany({}),
       Inquiry.deleteMany({}),
-    ]);
+      // Inquiry.deleteMany({}),
 
+    ]);
+    console.log("Database cleared successfully!")
+    console.log("Seeding database with new data...")
     // Admin user
     await User.create({
       name: 'Alex Rivers',
@@ -51,6 +55,10 @@ const seed = async () => {
         isFeatured: true,
         isPublished: true,
         order: 1,
+        isInternal: false,
+        githubUrl: 'https://github.com',
+        liveUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT16HTGbqH3KYrQES598tZM6i-KcrDmstBSehkf_DbJ-NeOqPxV-PfUpf0C&s=10',
+        heroImage: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT16HTGbqH3KYrQES598tZM6i-KcrDmstBSehkf_DbJ-NeOqPxV-PfUpf0C&s=10',
       },
       {
         title: 'AI-Driven Dashboard Platform',
@@ -60,6 +68,10 @@ const seed = async () => {
         isFeatured: true,
         isPublished: true,
         order: 2,
+        isInternal: false,
+        githubUrl: 'https://github.com',
+        liveUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT16HTGbqH3KYrQES598tZM6i-KcrDmstBSehkf_DbJ-NeOqPxV-PfUpf0C&s=10',
+        heroImage: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT16HTGbqH3KYrQES598tZM6i-KcrDmstBSehkf_DbJ-NeOqPxV-PfUpf0C&s=10',
       },
       {
         title: 'Open Source UI Library',
@@ -69,6 +81,10 @@ const seed = async () => {
         isFeatured: false,
         isPublished: true,
         order: 3,
+        isInternal: false,
+        githubUrl: 'https://github.com',
+        liveUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT16HTGbqH3KYrQES598tZM6i-KcrDmstBSehkf_DbJ-NeOqPxV-PfUpf0C&s=10',
+        heroImage: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT16HTGbqH3KYrQES598tZM6i-KcrDmstBSehkf_DbJ-NeOqPxV-PfUpf0C&s=10',
       },
       {
         title: 'Real-Time Collaboration Engine',
@@ -78,6 +94,10 @@ const seed = async () => {
         isFeatured: true,
         isPublished: true,
         order: 4,
+        isInternal: false,
+        githubUrl: 'https://github.com',
+        liveUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT16HTGbqH3KYrQES598tZM6i-KcrDmstBSehkf_DbJ-NeOqPxV-PfUpf0C&s=10',
+        heroImage: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT16HTGbqH3KYrQES598tZM6i-KcrDmstBSehkf_DbJ-NeOqPxV-PfUpf0C&s=10',
       },
     ]);
 
@@ -112,21 +132,60 @@ const seed = async () => {
       },
     ]);
 
+    // // Skills
+    // await Skill.create([
+    //   { name: 'React', category: 'Frontend', proficiency: 95, order: 1 },
+    //   { name: 'TypeScript', category: 'Frontend', proficiency: 90, order: 2 },
+    //   { name: 'Vue.js', category: 'Frontend', proficiency: 80, order: 3 },
+    //   { name: 'Node.js', category: 'Backend', proficiency: 92, order: 1 },
+    //   { name: 'Rust', category: 'Backend', proficiency: 75, order: 2 },
+    //   { name: 'Python', category: 'Backend', proficiency: 85, order: 3 },
+    //   { name: 'MongoDB', category: 'Database', proficiency: 88, order: 1 },
+    //   { name: 'PostgreSQL', category: 'Database', proficiency: 83, order: 2 },
+    //   { name: 'Redis', category: 'Database', proficiency: 78, order: 3 },
+    //   { name: 'Docker', category: 'DevOps', proficiency: 87, order: 1 },
+    //   { name: 'AWS', category: 'DevOps', proficiency: 82, order: 2 },
+    //   { name: 'Kubernetes', category: 'DevOps', proficiency: 72, order: 3 },
+    // ]);
+
     // Skills
-    await Skill.create([
-      { name: 'React', category: 'Frontend', proficiency: 95, order: 1 },
-      { name: 'TypeScript', category: 'Frontend', proficiency: 90, order: 2 },
-      { name: 'Vue.js', category: 'Frontend', proficiency: 80, order: 3 },
-      { name: 'Node.js', category: 'Backend', proficiency: 92, order: 1 },
-      { name: 'Rust', category: 'Backend', proficiency: 75, order: 2 },
-      { name: 'Python', category: 'Backend', proficiency: 85, order: 3 },
-      { name: 'MongoDB', category: 'Database', proficiency: 88, order: 1 },
-      { name: 'PostgreSQL', category: 'Database', proficiency: 83, order: 2 },
-      { name: 'Redis', category: 'Database', proficiency: 78, order: 3 },
-      { name: 'Docker', category: 'DevOps', proficiency: 87, order: 1 },
-      { name: 'AWS', category: 'DevOps', proficiency: 82, order: 2 },
-      { name: 'Kubernetes', category: 'DevOps', proficiency: 72, order: 3 },
-    ]);
+await Skill.create([
+  // Programming Languages
+  { name: 'JavaScript', category: 'Programming Languages', order: 1 },
+  { name: 'TypeScript', category: 'Programming Languages', order: 2 },
+  { name: 'SQL', category: 'Programming Languages', order: 3 },
+  { name: 'PHP', category: 'Programming Languages', order: 4 },
+  { name: 'HCL', category: 'Programming Languages', order: 5 },
+
+  // DevOps & Tools
+  { name: 'Docker', category: 'DevOps & Tools', order: 1 },
+  { name: 'Git', category: 'DevOps & Tools', order: 2 },
+  { name: 'VIM', category: 'DevOps & Tools', order: 3 },
+  { name: 'NeoVim', category: 'DevOps & Tools', order: 4 },
+  { name: 'Kubernetes', category: 'DevOps & Tools', order: 5 },
+  { name: 'Agile', category: 'DevOps & Tools', order: 6 },
+  { name: 'CI/CD with Jenkins', category: 'DevOps & Tools', order: 7 },
+  { name: 'Terraform', category: 'DevOps & Tools', order: 8 },
+
+  // JavaScript Libraries & Frameworks
+  { name: 'Node.js', category: 'JavaScript Libraries & Frameworks', order: 1 },
+  { name: 'React.js', category: 'JavaScript Libraries & Frameworks', order: 2 },
+  { name: 'Bun.js', category: 'JavaScript Libraries & Frameworks', order: 3 },
+  { name: 'Deno', category: 'JavaScript Libraries & Frameworks', order: 4 },
+  { name: 'Vanilla JS', category: 'JavaScript Libraries & Frameworks', order: 5 },
+  { name: 'Next.js', category: 'JavaScript Libraries & Frameworks', order: 6 },
+
+  // Web Frameworks
+  { name: 'Express.js', category: 'Web Frameworks', order: 1 },
+  { name: 'Fastify', category: 'Web Frameworks', order: 2 },
+
+  // Backend as a Service
+  { name: 'Firebase', category: 'Backend as a Service', order: 1 },
+  { name: 'Appwrite', category: 'Backend as a Service', order: 2 },
+
+  // Testing
+  { name: 'Jest', category: 'Testing', order: 1 }
+]);
 
     // Contact
     await Contact.create({
@@ -166,12 +225,11 @@ const seed = async () => {
         createdAt: new Date('2024-10-21T18:45:00Z'),
       },
     ]);
-
-    console.log('🌱 Database seeded successfully!');
-    console.log('📧 Admin credentials: admin@portfolio.dev / Admin@1234');
+    console.log('Database seeded successfully!');
+    console.log('Admin credentials: admin@portfolio.dev / Admin@1234');
     mongoose.disconnect();
   } catch (err) {
-    console.error('❌ Seed error:', err);
+    console.error('Seed error:', err);
     process.exit(1);
   }
 };

@@ -21,6 +21,25 @@ const useVisible = (ref) => {
   return visible;
 };
 
+// Social links
+const links = [
+  {
+    name: 'GitHub',
+    url: 'https://github.com/your-username',
+    icon: <FaGithub className="w-5 h-5 text-zinc-800 dark:text-zinc-100 transition-colors" />,
+  },
+  {
+    name: 'LinkedIn',
+    url: 'https://linkedin.com/in/your-profile',
+    icon: <FaLinkedin className="w-5 h-5 text-zinc-800 dark:text-zinc-100 transition-colors" />,
+  },
+  {
+    name: 'Email',
+    url: 'mailto:your-email@example.com',
+    icon: <Mail className="w-5 h-5 text-zinc-800 dark:text-zinc-100 transition-colors" />,
+  },
+];
+
 // ── Section Wrapper ──────────────────────────────────────────────────────────
 const Section = ({ id, children, className = '' }) => {
   const ref = useRef(null);
@@ -47,7 +66,7 @@ const Navbar = ({ isAvailable }) => {
   const links = ['About', 'Projects', 'Experience', 'Skills', 'Contact'];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 dark:bg-gray-950/90 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800' : ''}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/40 dark:bg-zinc-900/70 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-zinc-900' : ''}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white text-sm font-black">C</div>
@@ -102,7 +121,8 @@ const Navbar = ({ isAvailable }) => {
 
 // ── HERO ─────────────────────────────────────────────────────────────────────
 const Hero = ({ data }) => (
-  <section id="about" className="relative min-h-screen flex items-center overflow-hidden">
+
+  <section id="about" className="relative min-h-screen bg-zinc-50 dark:bg-black/70 flex items-center overflow-hidden">
     {/* Background glow */}
     <div className="absolute inset-0 pointer-events-none" />
 
@@ -113,17 +133,17 @@ const Hero = ({ data }) => (
     <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-16 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
       {/* Text */}
       <div className="flex-1 text-center lg:text-left">
-        {data?.isAvailable && (
+        {data?.home?.isAvailable && (
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800  mb-6 animate-fade-in">
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse-dot"></div>
             <span className="text-xs font-semibold text-green-500 uppercase tracking-widest">Available for Work</span>
           </div>
         )}
         <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-5xl font-black text-gray-800 dark:text-gray-300 leading-tight mb-6 animate-fade-in">
-          {data?.mainHeadline || "Hello, I'm a Developer"}
+          {data?.home?.mainHeadline || "Hello, I'm a Developer"}
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 animate-fade-in">
-          {data?.subHeadline || 'Building extraordinary digital experiences.'}
+          {data?.home?.subHeadline || 'Building extraordinary digital experiences.'}
         </p>
         <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start animate-fade-in">
           <a
@@ -138,14 +158,33 @@ const Hero = ({ data }) => (
             <FaAddressCard size={14} />
           </a>
         </div>
+        {/* Social Media links */}
+        <div className="my-4 -mb-6  flex items-center justify-center lg:justify-start gap-4 sm:gap-8">
+          <div className="flex items-center  gap-4 sm:gap-8">
+            {links.map((link, index) => (
+              <a
+                key={index}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.name}
+                className="group flex items-center justify-center w-10 h-10  text-zinc-950 dark:text-zinc-50 dark:bg-zinc-900  rounded-full text-xs font-medium border border-zinc-200 dark:border-zinc-700/40 hover:border-zinc-400 hover:bg-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-950 bg-transparent transition-all duration-300 ease-in-out"
+              >
+                {link.icon}
+              </a>
+            ))}
+          </div>
+        </div>
+
+
         {/* Metrics */}
-        {data?.metrics && (
+        {data?.home?.metrics && (
           <div className="flex flex-wrap justify-center lg:justify-start gap-6 mt-12 animate-fade-in">
             {[
-              { label: 'Projects', value: data.metrics.projectsCompleted },
-              { label: 'Years Exp', value: data.metrics.yearsExperience },
-              { label: 'OSS Contribs', value: data.metrics.openSourceContribs },
-              { label: 'Clients', value: data.metrics.happyClients },
+              { label: 'Projects', value: data.home.metrics.projectsCompleted },
+              { label: 'Years Exp', value: data.home.metrics.yearsExperience },
+              { label: 'OSS Contribs', value: data.home.metrics.openSourceContribs },
+              { label: 'Clients', value: data.home.metrics.happyClients },
             ].map(({ label, value }) => (
               <div key={label} className="text-center">
                 <div className="text-3xl font-black text-gray-900 dark:text-gray-300">{value}+</div>
@@ -184,7 +223,7 @@ const Hero = ({ data }) => (
 
 // ── PROJECTS ─────────────────────────────────────────────────────────────────
 const Projects = ({ projects }) => (
-  <Section id="projects" className="py-24 bg-white dark:bg-gray-950">
+  <Section id="projects" className="py-24 bg-zinc-50 dark:bg-gray-950">
     <div className="max-w-6xl mx-auto px-4 sm:px-6">
       <div className="text-center mb-14">
         <div className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-3">
@@ -259,25 +298,51 @@ const Projects = ({ projects }) => (
   </Section>
 );
 
+// Helper function to turn "2024-05" into "May 2024" or "2024-05-12" into "May 2024"
+const formatDate = (dateStr) => {
+  if (!dateStr) return '';
+
+  // Clean up string formatting spacing issues
+  const cleanStr = String(dateStr).trim().replace(' ', '-');
+  const parts = cleanStr.split('-');
+
+  if (parts.length >= 2) {
+    const year = parts[0];
+    const monthIndex = parseInt(parts[1], 10) - 1;
+
+    // Array mapping for short textual months
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+
+    if (monthIndex >= 0 && monthIndex < 12) {
+      return `${months[monthIndex]} ${year}`;
+    }
+  }
+
+  // Fallback cleanly to the original string if parsing structure fails
+  return dateStr;
+};
+
 // ── EXPERIENCE ───────────────────────────────────────────────────────────────
 const ExperienceSection = ({ experiences = [] }) => {
   return (
-    <section id="experience" className="py-24 dark:bg-zinc-950 text-black dark:text-white overflow-hidden">
+    <section id="experience" className="py-24 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-200 overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
 
         {/* Header Section */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 dark:text-zinc-400 text-zinc-700 font-semibold text-xs tracking-widest uppercase mb-3 dark:bg-zinc-900 bg-gray-100 border border-zinc-800 px-3 py-1 rounded-full">
-            <Briefcase size={14} className="dark:text-indigo-500 text-indigo-900" />
+          <div className="inline-flex items-center gap-2 text-zinc-600 dark:text-zinc-400 font-semibold text-xs tracking-widest uppercase mb-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-3 py-1 rounded-full shadow-sm dark:shadow-none">
+            <Briefcase size={14} className="text-indigo-600 dark:text-indigo-400" />
             Career Journey
           </div>
-          <h2 className="text-3xl font-black dark:text-white text-black tracking-tight">Work Experience</h2>
+          <h2 className="text-4xl font-black tracking-tight">Work Experience</h2>
         </div>
 
         {/* Timeline Container */}
         <div className="relative">
-          {/* Modern Minimal Vertical Timeline Line */}
-          <div className="absolute left-4 sm:left-6 top-2 bottom-2 w-[2px] bg-gradient-to-b from-gray-600 via-gray-600 to-gray-600 opacity-30 dark:bg-gradient-to-b dark:from-indigo-500 dark:via-purple-500 dark:to-transparent dark:opacity-30" />
+          <div className="absolute left-4 sm:left-6 top-2 bottom-2 w-[2px] bg-zinc-200 dark:bg-gradient-to-b dark:from-indigo-500 dark:via-purple-500 dark:to-transparent opacity-60 dark:opacity-30" />
 
           <div className="space-y-10">
             {experiences.map((exp) => (
@@ -285,24 +350,24 @@ const ExperienceSection = ({ experiences = [] }) => {
                 key={exp._id}
                 className="pl-10 sm:pl-16 relative group transition-all duration-300"
               >
-                {/* Glow Timeline Ring Indicator */}
-                <div className="absolute left-2.5 sm:left-4 top-2.5 w-3.5 h-3.5 rounded-full dark:bg-zinc-950 bg-gray-300 border-2 dark:border-indigo-500 border-gray-400 shadow-[0_0_10px_rgba(99,102,241,0.5)] z-10 transition-transform duration-300 group-hover:scale-125 group-hover:border-purple-400" />
+                {/* Reactive Ring Node Marker */}
+                <div className="absolute left-2.5 sm:left-4 top-2.5 w-3.5 h-3.5 rounded-full bg-white dark:bg-zinc-950 border-2 border-indigo-600 dark:border-indigo-500 shadow-sm dark:shadow-[0_0_10px_rgba(99,102,241,0.5)] z-10 transition-transform duration-300 group-hover:scale-125 group-hover:border-indigo-500 dark:group-hover:border-purple-400" />
 
-                {/* Main Card */}
-                <div className=" dark:bg-zinc-900/40 bg-gray-100 backdrop-blur-sm rounded-2xl p-6 border border-zinc-800/80 hover:border-zinc-700/60 shadow-xl transition-all duration-300 hover:-translate-y-1">
+                {/* Main Component Panel */}
+                <div className="bg-white dark:bg-zinc-900/40 backdrop-blur-sm rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700/60 shadow-md shadow-zinc-100 dark:shadow-xl dark:shadow-black/20 transition-all duration-300 hover:-translate-y-1">
 
-                  {/* Header metadata layout */}
-                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4 pb-4 border-b border-zinc-800/60">
+                  {/* Top Metadata Layout */}
+                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4 pb-4 border-b border-zinc-100 dark:border-zinc-800/60">
                     <div>
-                      <h3 className="text-xl font-bold dark:text-white text-black transition-colors">
+                      <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 transition-colors">
                         {exp.jobTitle}
                       </h3>
 
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 text-sm text-zinc-400">
-                        <span className="font-semibold dark:text-indigo-400 text-indigo-900">{exp.company}</span>
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                        <span className="font-semibold text-indigo-600 dark:text-indigo-400">{exp.company}</span>
 
                         {exp.location && (
-                          <span className="flex items-center gap-1 dark:text-gray-400 text-gray-700">
+                          <span className="flex items-center gap-1 text-zinc-400 dark:text-zinc-500">
                             <MapPin size={13} />
                             {exp.location}
                           </span>
@@ -310,27 +375,26 @@ const ExperienceSection = ({ experiences = [] }) => {
                       </div>
                     </div>
 
-                    {/* Modern Date Tag Box */}
-                    <div className="flex items-center gap-2 self-start md:self-auto dark:bg-zinc-800/60 dark:border-zinc-700/30 bg-gray-100/60 border border-zinc-700/30 px-3 py-1.5 rounded-xl text-xs font-medium text-zinc-300 shadow-inner">
-                      <Calendar size={13} className="dark:text-indigo-400 text-indigo-900" />
-                      <span className="dark:text-zinc-300 text-zinc-700">{exp.startDate?.replace('-', ' ')}</span>
-                      <span className="text-zinc-500">—</span>
-                      <span className={exp.isPresent ? "dark:text-emerald-400 text-emerald-900 font-semibold" : "dark:text-zinc-300 text-zinc-700"}>
-                        {exp.isPresent ? 'Present' : exp.endDate?.replace('-', ' ')}
+                    {/* Integrated Nicer Date Format Capsule */}
+                    <div className="flex items-center gap-2 self-start md:self-auto bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/30 px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 shadow-inner tracking-wide">
+                      <Calendar size={13} className="text-indigo-600 dark:text-indigo-400" />
+                      <span>{formatDate(exp.startDate)}</span>
+                      <span className="text-zinc-400 dark:text-zinc-600 font-normal">—</span>
+                      <span className={exp.isPresent ? "text-emerald-600 dark:text-emerald-400 font-bold" : ""}>
+                        {exp.isPresent ? 'Present' : formatDate(exp.endDate)}
                       </span>
                     </div>
                   </div>
 
-                  {/* Bullet Points / Responsibilities Description */}
+                  {/* Bullet Responsibilities */}
                   {exp.responsibilities?.length > 0 && (
                     <ul className="space-y-2.5">
                       {exp.responsibilities.map((r, idx) => (
                         <li
                           key={idx}
-                          className="flex items-start gap-3 text-sm dark:text-zinc-300 text-zinc-700 leading-relaxed transition-colors"
+                          className="flex items-start gap-3 text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed transition-colors"
                         >
-                          {/* Elegant minimal line pointer */}
-                          <span className="text-indigo-500 font-bold mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-indigo-500/80" />
+                          <span className="mt-2 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400/80" />
                           <span>{r}</span>
                         </li>
                       ))}
@@ -350,7 +414,7 @@ const ExperienceSection = ({ experiences = [] }) => {
 
 // ── SKILLS ────────────────────────────────────────────────────────────────────
 const SkillsSection = ({ skills = [] }) => {
-  // 1. Core categories defined exactly as per design
+  // 1. Fixed structure: Mapping semantic category names to their respective icons
   const CATEGORIES = [
     { icon: Terminal, name: 'Programming Languages' },
     { icon: Settings, name: 'DevOps & Tools' },
@@ -360,32 +424,30 @@ const SkillsSection = ({ skills = [] }) => {
     { icon: CheckSquare, name: 'Testing' }
   ];
 
-  // 2. Flexible grouping logic to prevent data from being filtered out
+  // 2. High-performance precise array reduction & string normalization 
   const grouped = CATEGORIES.reduce((acc, cat) => {
+    const targetCat = cat.name.toLowerCase().trim();
+
     const matchingSkills = skills.filter((sk) => {
       if (!sk.category) return false;
-
       const dbCat = String(sk.category).toLowerCase().trim();
-      const targetCat = cat.name.toLowerCase().trim();
-
-      // Matches even if your database says "Devops" instead of "DevOps & Tools"
       return dbCat === targetCat || targetCat.includes(dbCat) || dbCat.includes(targetCat);
     });
 
     if (matchingSkills.length > 0) {
       acc[cat.name] = {
         icon: cat.icon,
-        items: matchingSkills
+        items: matchingSkills,
       };
     }
     return acc;
   }, {});
 
-  // Fallback: If nothing matched the strict categories, catch them in an "Other" block
+  // 3. Fallback tracking: Catch outliers without erasing data from viewport
   const matchedSkillIds = new Set(
-    Object.values(grouped).flatMap(group => group.items.map(s => s._id))
+    Object.values(grouped).flatMap((group) => group.items.map((s) => s._id))
   );
-  const remainingSkills = skills.filter(sk => !matchedSkillIds.has(sk._id));
+  const remainingSkills = skills.filter((sk) => !matchedSkillIds.has(sk._id));
 
   if (remainingSkills.length > 0) {
     grouped['Other Skills'] = {
@@ -394,22 +456,21 @@ const SkillsSection = ({ skills = [] }) => {
     };
   }
 
-  // Double-check fallback: If still empty, display skills as a single list so something always renders
   const hasGroupedData = Object.keys(grouped).length > 0;
 
   return (
-    <section id="skills" className="py-24 dark:bg-zinc-950 text-black dark:text-white">
+    <section id="skills" className="py-24 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
         {/* Header Section */}
-        <div className="text-center mb-14">
-          <h2 className="text-4xl font-bold mb-3">Technical Skills</h2>
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold tracking-tight mb-3">Technical Skills</h2>
           <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto text-sm sm:text-base">
             Comprehensive expertise across modern development stack with focus on scalable web applications and DevOps practices.
           </p>
         </div>
 
-        {/* Grid Layout */}
+        {/* Grid Layout matching the design specs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {hasGroupedData ? (
             Object.entries(grouped).map(([categoryName, data]) => {
@@ -417,21 +478,23 @@ const SkillsSection = ({ skills = [] }) => {
               return (
                 <div
                   key={categoryName}
-                  className="bg-zinc-50/50 dark:bg-zinc-950/50 backdrop-blur-sm rounded-2xl border border-zinc-800/80 p-6 flex flex-col justify-between"
+                  className="bg-white dark:bg-zinc-900/50 backdrop-blur-sm rounded-2xl border border-zinc-200 dark:border-zinc-800/80 p-6 flex flex-col justify-between shadow-sm dark:shadow-none"
                 >
                   <div>
                     {/* Category Title & Icon */}
                     <div className="flex items-center gap-2.5 mb-5">
-                      <Icon size={18} className="text-zinc-900 dark:text-zinc-200" />
-                      <h3 className="text-base font-semibold tracking-wide">{categoryName}</h3>
+                      <Icon size={18} className="text-zinc-500 dark:text-zinc-400" />
+                      <h3 className="text-base font-semibold tracking-wide text-zinc-800 dark:text-zinc-200">
+                        {categoryName}
+                      </h3>
                     </div>
 
-                    {/* Skill Badges */}
+                    {/* Skill Badges Layout */}
                     <div className="flex flex-wrap gap-2">
                       {data.items.map((skill) => (
                         <span
                           key={skill._id || skill.name}
-                          className="px-3 py-1.5 bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-200 rounded-lg text-xs font-medium border border-zinc-700/40 hover:border-zinc-600 transition-colors duration-200"
+                          className="px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg text-xs font-medium border border-zinc-200 dark:border-zinc-700/40 hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors duration-200"
                         >
                           {skill.name}
                         </span>
@@ -442,11 +505,14 @@ const SkillsSection = ({ skills = [] }) => {
               );
             })
           ) : (
-            /* Emergency Fallback UI if data structure is completely different */
-            <div className="col-span-full bg-zinc-900/50 rounded-2xl border border-zinc-800 p-6">
+            /* Emergency Fallback UI rendering if your dynamic input object arrays are entirely empty */
+            <div className="col-span-full bg-white dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
               <div className="flex flex-wrap gap-2">
                 {skills.map((skill) => (
-                  <span key={skill._id || skill.name} className="px-3 py-1.5 bg-zinc-800 text-zinc-300 rounded-lg text-xs font-medium">
+                  <span
+                    key={skill._id || skill.name}
+                    className="px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg text-xs font-medium"
+                  >
                     {skill.name}
                   </span>
                 ))}
@@ -459,6 +525,7 @@ const SkillsSection = ({ skills = [] }) => {
     </section>
   );
 };
+
 // ── CONTACT ───────────────────────────────────────────────────────────────────
 const ContactSection = ({ contact }) => {
   const [form, setForm] = useState({ senderName: '', senderEmail: '', subject: '', message: '' });
@@ -477,7 +544,7 @@ const ContactSection = ({ contact }) => {
   };
 
   return (
-    <Section id="contact" className="py-24  dark:bg-black">
+    <Section id="contact" className="py-24 bg-zinc-50  dark:bg-black">
       <div className="max-w-5xl  mx-auto px-4 sm:px-6">
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-sm mb-3">
@@ -534,7 +601,7 @@ const ContactSection = ({ contact }) => {
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Message Sent!</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">I'll get back to you as soon as possible.</p>
-                <button onClick={() => setSent(false)} className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+                <button onClick={() => setSent(false)} className="text-sm cursor-pointer text-indigo-600 dark:text-indigo-400 hover:underline">
                   Send another message
                 </button>
               </div>
@@ -599,35 +666,36 @@ const ContactSection = ({ contact }) => {
   );
 };
 
+
 // ── FOOTER ─────────────────────────────────────────────────────────────────
-const Footer = ({ contact }) => (
-  <footer className="bg-gray-950 dark:bg-black text-gray-400 py-10">
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-black">Z</div>
-        <span className="text-sm font-medium text-gray-300">Portfolio</span>
+const Footer = ({ contact }) => {
+  // Gracefully fallback to generic strings if dynamic contact properties aren't loaded
+  const developerName = contact?.name || "John Developer";
+  const developerTitle = contact?.title || "Senior Software Engineer | Full-Stack Developer | DevOps Enthusiast";
+
+  return (
+    <footer className="bg-zinc-50 dark:bg-black text-gray-400 py-10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center">
+
+        {/* Name Heading matching Screenshot 2026-07-06 011440.png */}
+        <h3 className="dark:text-white text-zinc-700 font-medium  tracking-wide mb-3">
+          {developerName}
+        </h3>
+
+        {/* Roles / Professional Tagline Description */}
+        <p className="text-sm text-zinc-500 max-w-2xl leading-relaxed mb-6">
+          {developerTitle}
+        </p>
+
+        {/* Minimalist Copyright String */}
+        <p className="text-xs text-zinc-600 tracking-normal">
+          © {new Date().getFullYear()} {developerName}. All rights reserved.
+        </p>
+
       </div>
-      <p className="text-xs text-center">© {new Date().getFullYear()} · Built with React, TailwindCSS & Express</p>
-      <div className="flex items-center gap-3">
-        {contact?.linkedinUrl && (
-          <a href={`https://${contact.linkedinUrl}`} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
-            <FaLinkedin size={18} />
-          </a>
-        )}
-        {contact?.githubUrl && (
-          <a href={`https://${contact.githubUrl}`} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
-            <FaGithub size={18} />
-          </a>
-        )}
-        {contact?.email && (
-          <a href={`mailto:${contact.email}`} className="hover:text-white transition-colors">
-            <Mail size={18} />
-          </a>
-        )}
-      </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 const PublicPortfolio = () => {
@@ -635,6 +703,7 @@ const PublicPortfolio = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("data", data)
     const load = async () => {
       try {
         const [homeRes, projRes, expRes, skillRes, contactRes] = await Promise.all([
@@ -678,7 +747,7 @@ const PublicPortfolio = () => {
   return (
     <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       <Navbar isAvailable={data.home?.isAvailable} />
-      <Hero data={data.home} />
+      <Hero data={data} />
       <SkillsSection skills={data.skills} />
       <ExperienceSection experiences={data.experiences} />
       <Projects projects={data.projects} />
