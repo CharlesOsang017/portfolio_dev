@@ -38,11 +38,12 @@ const seed = async () => {
 
     // Home content
     await HomeContent.create({
-      mainHeadline: "Hello, I'm Alex Rivers",
-      subHeadline: 'A Senior Software Engineer specializing in crafting high-performance distributed systems and elegant user interfaces. I bridge the gap between complex backend architecture and seamless human interaction.',
+      mainHeadline: "Hello, I'm Charles Osango",
+      subHeadline: 'I am a Full-Stack Developer with a passion for building high-performance, scalable, and user-friendly web applications. I specialize in the MERN stack, but I am also proficient in a wide range of other technologies and frameworks.',
+      resumeFile: 'resume.pdf',
       isAvailable: true,
-      metrics: { projectsCompleted: 48, yearsExperience: 12, openSourceContribs: 156, happyClients: 32 },
-      portfolioViews: 2400,
+      metrics: { projectsCompleted: 20, yearsExperience: 3, happyClients: 15 },
+      portfolioViews: 500,
     });
 
     // Projects
@@ -53,7 +54,7 @@ const seed = async () => {
         techStack: ['Rust', 'gRPC', 'AWS'],
         description: 'Building a high-throughput, fault-tolerant consensus layer for distributed financial ledgers. Focused on optimizing gRPC communication overhead and implementing a custom memory-safe Rust implementation of the Raft algorithm.',
         isFeatured: true,
-        isPublished: true,       
+        isPublished: true,
         isInternal: false,
         githubUrl: 'https://github.com',
         liveUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT16HTGbqH3KYrQES598tZM6i-KcrDmstBSehkf_DbJ-NeOqPxV-PfUpf0C&s=10',
@@ -65,7 +66,7 @@ const seed = async () => {
         techStack: ['React', 'Python', 'TensorFlow', 'PostgreSQL'],
         description: 'A real-time analytics dashboard powered by machine learning models for predictive insights.',
         isFeatured: true,
-        isPublished: true,     
+        isPublished: true,
         isInternal: false,
         githubUrl: 'https://github.com',
         liveUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT16HTGbqH3KYrQES598tZM6i-KcrDmstBSehkf_DbJ-NeOqPxV-PfUpf0C&s=10',
@@ -110,7 +111,7 @@ const seed = async () => {
           'Led a team of 12 engineers to refactor core monolith into microservices, reducing latency by 40%.',
           'Implemented an automated CI/CD pipeline using GitHub Actions and AWS ECS.',
           'Designed and shipped a real-time notification system serving 500k+ daily active users.',
-        ],       
+        ],
       },
       {
         jobTitle: 'Full Stack Developer',
@@ -149,7 +150,7 @@ const seed = async () => {
         ],
       },
       {
-        jobTitle: 'Software Engineer',  
+        jobTitle: 'Software Engineer',
         company: 'Creative Logic Agency',
         location: 'Remote',
         startDate: '2018-06',
@@ -179,59 +180,59 @@ const seed = async () => {
     // ]);
 
     // Skills
-await Skill.create([
-  // Programming Languages
-  { name: 'JavaScript', category: 'Programming Languages', order: 1 },
-  { name: 'TypeScript', category: 'Programming Languages', order: 2 },
-  { name: 'SQL', category: 'Programming Languages', order: 3 },
-  { name: 'PHP', category: 'Programming Languages', order: 4 },
-  { name: 'HCL', category: 'Programming Languages', order: 5 },
+    await Skill.create([
+      // Programming Languages
+      { name: 'JavaScript', category: 'Programming Languages', order: 1 },
+      { name: 'TypeScript', category: 'Programming Languages', order: 2 },
+      { name: 'SQL', category: 'Programming Languages', order: 3 },
+      { name: 'PHP', category: 'Programming Languages', order: 4 },
+      { name: 'HCL', category: 'Programming Languages', order: 5 },
 
-  // DevOps & Tools
-  { name: 'Docker', category: 'DevOps & Tools', order: 1 },
-  { name: 'Git', category: 'DevOps & Tools', order: 2 },
-  { name: 'VIM', category: 'DevOps & Tools', order: 3 },
-  { name: 'NeoVim', category: 'DevOps & Tools', order: 4 },
-  { name: 'Kubernetes', category: 'DevOps & Tools', order: 5 },
-  { name: 'Agile', category: 'DevOps & Tools', order: 6 },
-  { name: 'CI/CD with Jenkins', category: 'DevOps & Tools', order: 7 },
-  { name: 'Terraform', category: 'DevOps & Tools', order: 8 },
+      // DevOps & Tools
+      { name: 'Docker', category: 'DevOps & Tools', order: 1 },
+      { name: 'Git', category: 'DevOps & Tools', order: 2 },
+      { name: 'VIM', category: 'DevOps & Tools', order: 3 },
+      { name: 'NeoVim', category: 'DevOps & Tools', order: 4 },
+      { name: 'Kubernetes', category: 'DevOps & Tools', order: 5 },
+      { name: 'Agile', category: 'DevOps & Tools', order: 6 },
+      { name: 'CI/CD with Jenkins', category: 'DevOps & Tools', order: 7 },
+      { name: 'Terraform', category: 'DevOps & Tools', order: 8 },
 
-  // JavaScript Libraries & Frameworks
-  { name: 'Node.js', category: 'JavaScript Libraries & Frameworks', order: 1 },
-  { name: 'React.js', category: 'JavaScript Libraries & Frameworks', order: 2 },
-  { name: 'Bun.js', category: 'JavaScript Libraries & Frameworks', order: 3 },
-  { name: 'Deno', category: 'JavaScript Libraries & Frameworks', order: 4 },
-  { name: 'Vanilla JS', category: 'JavaScript Libraries & Frameworks', order: 5 },
-  { name: 'Next.js', category: 'JavaScript Libraries & Frameworks', order: 6 },
+      // JavaScript Libraries & Frameworks
+      { name: 'Node.js', category: 'JavaScript Libraries & Frameworks', order: 1 },
+      { name: 'React.js', category: 'JavaScript Libraries & Frameworks', order: 2 },
+      { name: 'Bun.js', category: 'JavaScript Libraries & Frameworks', order: 3 },
+      { name: 'Deno', category: 'JavaScript Libraries & Frameworks', order: 4 },
+      { name: 'Vanilla JS', category: 'JavaScript Libraries & Frameworks', order: 5 },
+      { name: 'Next.js', category: 'JavaScript Libraries & Frameworks', order: 6 },
 
-  // Web Frameworks
-  { name: 'Express.js', category: 'Web Frameworks', order: 1 },
-  { name: 'Fastify', category: 'Web Frameworks', order: 2 },
+      // Web Frameworks
+      { name: 'Express.js', category: 'Web Frameworks', order: 1 },
+      { name: 'Fastify', category: 'Web Frameworks', order: 2 },
 
-  // Backend as a Service
-  { name: 'Firebase', category: 'Backend as a Service', order: 1 },
-  { name: 'Appwrite', category: 'Backend as a Service', order: 2 },
+      // Backend as a Service
+      { name: 'Firebase', category: 'Backend as a Service', order: 1 },
+      { name: 'Appwrite', category: 'Backend as a Service', order: 2 },
 
-  // Databases
-  { name: 'PostgreSQL', category: 'Databases', order: 1 },
-  { name: 'MongoDB', category: 'Databases', order: 2 },
-  { name: 'Redis', category: 'Databases', order: 3 },
+      // Databases
+      { name: 'PostgreSQL', category: 'Databases', order: 1 },
+      { name: 'MongoDB', category: 'Databases', order: 2 },
+      { name: 'Redis', category: 'Databases', order: 3 },
 
-  // Testing
-  { name: 'Jest', category: 'Testing', order: 1 }
-]);
+      // Testing
+      { name: 'Jest', category: 'Testing', order: 1 }
+    ]);
 
-// Contact Seed
-await Contact.create({
-  email: 'charleskipkorir09@gmail.com',
-  location: 'Nairobi, Kenya',
-  linkedinUrl: 'linkedin.com/in/charleskipkorir',
-  githubUrl: 'github.com/charles-dev',
-  availability: 'selective',
-  customStatusMessage: 'Accepting new frontend contracts for Q4...',
-  timezone: 'Africa/Nairobi',
-});
+    // Contact Seed
+    await Contact.create({
+      email: 'charleskipkorir09@gmail.com',
+      location: 'Nairobi, Kenya',
+      linkedinUrl: 'linkedin.com/in/charleskipkorir',
+      githubUrl: 'github.com/charles-dev',
+      availability: 'selective',
+      customStatusMessage: 'Accepting new frontend contracts for Q4...',
+      timezone: 'Africa/Nairobi',
+    });
     // Sample Inquiries
     await Inquiry.create([
       {
