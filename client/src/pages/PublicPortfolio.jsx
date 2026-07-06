@@ -222,7 +222,7 @@ const Hero = ({ data }) => (
 );
 
 // ── PROJECTS ─────────────────────────────────────────────────────────────────
-const Projects = ({ projects }) => (
+const Projects = ({ projects = [] }) => (
   <Section id="projects" className="py-24 bg-zinc-50 dark:bg-gray-950">
     <div className="max-w-6xl mx-auto px-4 sm:px-6">
       <div className="text-center mb-14">
@@ -236,7 +236,8 @@ const Projects = ({ projects }) => (
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.filter((p) => p.isPublished).map((project, i) => (
-          <div key={project._id} className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+          /* Added a fallback key 'i' just in case _id fails to populate during hydration */
+          <div key={project._id || i} className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
             <div className="aspect-video bg-gradient-to-br from-indigo-900 to-purple-900 relative overflow-hidden">
               {project.heroImage ? (
                 <img src={project.heroImage} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -273,7 +274,6 @@ const Projects = ({ projects }) => (
                 )}
               </div>
               <div className="flex items-center gap-3">
-
                 {project.githubUrl && (
                   <a href={project.githubUrl} target="_blank" rel="noreferrer"
                     className="flex items-center gap-1 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:underline">
@@ -281,7 +281,6 @@ const Projects = ({ projects }) => (
                     GitHub
                   </a>
                 )}
-
                 {project.liveUrl && (
                   <a href={project.liveUrl} target="_blank" rel="noreferrer"
                     className="flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
