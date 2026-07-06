@@ -297,7 +297,7 @@ const Projects = () => {
       </div>
 
       {/* Add new project card */}
-      <button
+      {/* <button
         onClick={handleAdd}
         className="w-full border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl py-8 flex flex-col items-center gap-2 text-gray-400 dark:text-gray-600 hover:border-indigo-400 dark:hover:border-indigo-600 hover:text-indigo-500 dark:hover:text-indigo-400 transition-all mb-5"
       >
@@ -305,7 +305,7 @@ const Projects = () => {
           <Plus size={20} />
         </div>
         <span className="text-sm font-medium">Add New Project to Portfolio</span>
-      </button>
+      </button> */}
 
       {/* Selected Project Editor */}
       {selectedProject && (

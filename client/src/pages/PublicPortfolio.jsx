@@ -367,7 +367,7 @@ const ExperienceSection = ({ experiences = [] }) => {
                         <span className="font-semibold text-indigo-600 dark:text-indigo-400">{exp.company}</span>
 
                         {exp.location && (
-                          <span className="flex items-center gap-1 text-zinc-400 dark:text-zinc-500">
+                          <span className="flex items-center gap-1 text-zinc-500 dark:text-zinc-400">
                             <MapPin size={13} />
                             {exp.location}
                           </span>

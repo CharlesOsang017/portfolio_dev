@@ -15,6 +15,8 @@ import Settings from './pages/admin/Settings';
 
 // Public site
 import PublicPortfolio from './pages/PublicPortfolio';
+import Inquiries from './pages/admin/Inquiries';
+import InquiryDetails from './pages/admin/InquiryDetails';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -46,8 +48,10 @@ const App = () => {
         <Route path="experience" element={<Experience />} />
         <Route path="skills" element={<Skills />} />
         <Route path="contact" element={<ContactInfo />} />
+        <Route path="inquiries" element={<Inquiries />} />
         <Route path="assets" element={<Assets />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="inquiries/:id" element={<InquiryDetails />} />
       </Route>
 
       {/* Fallback */}

@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { IoIosRefresh } from "react-icons/io";
-import { IoSave } from "react-icons/io5";
-import { FiMoreHorizontal } from "react-icons/fi";
-import { CiLinkedin, CiMail, CiLocationOn, CiCircleInfo, CiClock1, CiLink } from "react-icons/ci";
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 import { Clock, Info, Mail, MapPin, MoreHorizontal, RefreshCw, Save } from 'lucide-react';
@@ -74,7 +70,7 @@ const ContactInfo = () => {
   if (loading) return <div className="flex items-center justify-center h-64"><RefreshCw size={24} className="animate-spin text-gray-400" /></div>;
 
   return (
-    <div className="max-w-5xl animate-fade-in">
+    <div className="max-w-5xl animate-fade-in w-full">
       <div className="flex items-start justify-between mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Contact & Availability</h1>
@@ -137,30 +133,30 @@ const ContactInfo = () => {
           </div>
         </div>
 
-        {/* Primary Channels */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
+        {/* Primary Channels (FIXED OVERFLOWS) */}
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 min-w-0">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Primary Channels</h2>
-            <Link size={16} className="text-gray-400" />
+            <Mail size={16} className="text-gray-400" />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             {[
               { field: 'email', label: 'Email Address', icon: Mail, placeholder: 'your@email.com' },
               { field: 'location', label: 'Location', icon: MapPin, placeholder: 'City, Country' },
               { field: 'linkedinUrl', label: 'LinkedIn URL', icon: FaLinkedin, placeholder: 'linkedin.com/in/...' },
               { field: 'githubUrl', label: 'GitHub URL', icon: FaGithub, placeholder: 'github.com/...' },
             ].map(({ field, label, icon: Icon, placeholder }) => (
-              <div key={field}>
+              <div key={field} className="min-w-0">
                 <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">{label}</label>
-                <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus-within:border-indigo-400 transition-colors">
+                <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus-within:border-indigo-400 transition-colors w-full min-w-0">
                   <Icon size={14} className="text-gray-400 flex-shrink-0" />
                   <input
                     type="text"
                     value={contact?.[field] || ''}
                     onChange={(e) => handleChange(field, e.target.value)}
                     placeholder={placeholder}
-                    className="flex-1 text-sm bg-transparent text-gray-900 dark:text-white placeholder-gray-400 outline-none"
+                    className="flex-1 min-w-0 text-sm bg-transparent text-gray-900 dark:text-white placeholder-gray-400 outline-none truncate"
                   />
                 </div>
               </div>
@@ -184,9 +180,9 @@ const ContactInfo = () => {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Inquiries</h2>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage form submissions from your contact page</p>
           </div>
-          <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium flex items-center gap-1">
+          <Link to="/admin/inquiries" className="text-sm text-indigo-600 dark:text-indigo-400 hover:opacity-80 font-medium flex items-center gap-1 transition-opacity">
             View All →
-          </button>
+          </Link>
         </div>
 
         <div className="overflow-x-auto">
@@ -240,29 +236,6 @@ const ContactInfo = () => {
               <p className="text-sm">No inquiries yet</p>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Display Location */}
-      <div className="mt-5 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
-        <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 relative flex items-end">
-          {/* Map mockup */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-full h-full" style={{
-              background: 'repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(99,102,241,0.05) 30px, rgba(99,102,241,0.05) 31px), repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(99,102,241,0.05) 30px, rgba(99,102,241,0.05) 31px)',
-            }} />
-            <MapPin size={32} className="absolute text-indigo-500 opacity-60" />
-          </div>
-          <div className="relative z-10 m-4 bg-white dark:bg-gray-900 rounded-xl p-4 shadow-xl border border-gray-100 dark:border-gray-800 max-w-xs">
-            <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">Display Location</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-              Your current base is set to {contact?.location || 'Not set'}. This affects the timezone shown on your profile.
-            </p>
-            <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
-              <Clock size={12} />
-              Current Time: {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}
-            </div>
-          </div>
         </div>
       </div>
     </div>
