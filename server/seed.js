@@ -222,17 +222,16 @@ await Skill.create([
   { name: 'Jest', category: 'Testing', order: 1 }
 ]);
 
-    // Contact
-    await Contact.create({
-      email: 'alex.engineer@portfolio.dev',
-      location: 'San Francisco, CA',
-      linkedinUrl: 'linkedin.com/in/alexengineer',
-      githubUrl: 'github.com/alex-dev',
-      availability: 'selective',
-      customStatusMessage: 'Accepting new frontend contracts for Q4...',
-      timezone: 'America/Los_Angeles',
-    });
-
+// Contact Seed
+await Contact.create({
+  email: 'charleskipkorir09@gmail.com',
+  location: 'Nairobi, Kenya',
+  linkedinUrl: 'linkedin.com/in/charleskipkorir',
+  githubUrl: 'github.com/charles-dev',
+  availability: 'selective',
+  customStatusMessage: 'Accepting new frontend contracts for Q4...',
+  timezone: 'Africa/Nairobi',
+});
     // Sample Inquiries
     await Inquiry.create([
       {
