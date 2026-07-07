@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Define valid categories in one place to avoid typos across your app
 const VALID_CATEGORIES = [
@@ -33,4 +33,5 @@ const skillSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Skill', skillSchema);
+const Skill = mongoose.model('Skill', skillSchema);
+export default Skill;

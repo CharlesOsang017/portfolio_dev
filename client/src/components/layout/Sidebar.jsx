@@ -109,7 +109,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           <button
             onClick={handleLogout}
             title={collapsed ? 'Logout' : undefined}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+            className={`w-full flex cursor-pointer items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
               text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-150
               ${collapsed ? 'md:justify-center' : ''}`}
           >

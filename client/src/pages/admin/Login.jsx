@@ -6,18 +6,27 @@ import { useTheme } from '../../context/ThemeContext';
 import toast from 'react-hot-toast';
 
 const Login = () => {
-  const { user, login, loading } = useAuth();
+  const { user, login } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   if (user) return <Navigate to="/admin" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await login(email, password);
-    if (!result.success) toast.error(result.message);
+    setLoading(true);
+    try {
+      await login(email, password);
+      toast.success('Login successful');
+    } catch (error) {
+      toast.error(error.responce?.data?.message || error.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+
   };
 
   return (
@@ -91,7 +100,7 @@ const Login = () => {
             type="submit"
             id="login-btn"
             disabled={loading}
-            className="w-full py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-xl hover:opacity-90 active:scale-95 transition-all duration-150 disabled:opacity-50 mt-2"
+            className="w-full cursor-pointer py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-xl hover:opacity-90 active:scale-95 transition-all duration-150 disabled:opacity-50 mt-2"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
@@ -99,7 +108,7 @@ const Login = () => {
 
         <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
           New to Zenith?{' '}
-          <Link to="/admin/register" className="font-semibold text-gray-900 dark:text-white hover:underline">
+          <Link to="/admin/register" className="font-semibold cursor-pointer text-gray-900 dark:text-white hover:underline">
             Create an account
           </Link>
         </p>

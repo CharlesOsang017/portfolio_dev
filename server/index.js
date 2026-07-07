@@ -1,12 +1,19 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-
+import { connectToDb } from './config/db.js';
+import authRoutes from './routes/auth.router.js';
+import homeRoutes from './routes/home.route.js';
+import projectRoutes from './routes/project.route.js';
+import experienceRoutes from './routes/experience.route.js'
+import skillRoutes from './routes/skill.route.js';
+import contactRoutes from './routes/contact.route.js';
+import inquiryRoutes from './routes/inquiry.route.js';
 
 dotenv.config();
 
 const app = express();
-
+const port = process.env.PORT
 // Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
@@ -18,14 +25,14 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 
 // Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/home', require('./routes/home'));
-app.use('/api/projects', require('./routes/projects'));
-app.use('/api/experience', require('./routes/experience'));
-app.use('/api/skills', require('./routes/skills'));
-app.use('/api/contact', require('./routes/contact'));
-app.use('/api/inquiries', require('./routes/inquiries'));
-app.use('/api/assets', require('./routes/assets'));
+app.use('/api/auth', authRoutes);
+app.use('/api/home',  homeRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/experience', experienceRoutes);
+app.use('/api/skills', skillRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/inquiries', inquiryRoutes);
+// app.use('/api/assets', require('./routes/assets'));
 
 
 // Error handler
@@ -35,3 +42,7 @@ app.use((err, req, res, next) => {
 });
 
 
+app.listen(port, () => {
+  console.log(`Server is running on port: http://localhost:${port}`);
+  connectToDb()
+});

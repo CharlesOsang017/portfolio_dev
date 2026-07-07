@@ -6,19 +6,30 @@ import { useTheme } from '../../context/ThemeContext';
 import toast from 'react-hot-toast';
 
 const Register = () => {
-  const { user, register, loading } = useAuth();
+  const { user, register} = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   if (user) return <Navigate to="/admin" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await register(name, email, password);
-    if (!result.success) toast.error(result.message);
+    setLoading(true);
+    try {
+      await register(name, email, password);
+      toast.success('Registration successful');
+      setLoading(false);
+      
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message ||  'Registration failed' );
+    }finally{
+      setLoading(false);
+    }
+    
   };
 
   return (
@@ -93,7 +104,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-xl hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 mt-2"
+            className="w-full cursor-pointer py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-xl hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 mt-2"
           >
             {loading ? 'Creating account...' : 'Create Account'}
           </button>
@@ -101,7 +112,7 @@ const Register = () => {
 
         <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
           Already have an account?{' '}
-          <Link to="/admin/login" className="font-semibold text-gray-900 dark:text-white hover:underline">
+          <Link to="/admin/login" className="font-semibold cursor-pointer text-gray-900 dark:text-white hover:underline">
             Sign in
           </Link>
         </p>

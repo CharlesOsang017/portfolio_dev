@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const homeContentSchema = new mongoose.Schema({
   mainHeadline: { type: String, default: "Hello, I'm John Developer" },
@@ -14,4 +14,6 @@ const homeContentSchema = new mongoose.Schema({
   portfolioViews: { type: Number, default: 0 },
 }, { timestamps: true });
 
-module.exports = mongoose.model('HomeContent', homeContentSchema);
+
+const HomeContent = mongoose.model('HomeContent', homeContentSchema);
+export default HomeContent;
