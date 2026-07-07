@@ -8,7 +8,7 @@ import { FiExternalLink, FiMail, FiMapPin } from "react-icons/fi";
 import { CiMenuBurger } from "react-icons/ci";
 import api from '../services/api';
 import { useTheme } from '../context/ThemeContext';
-import { ArrowRight, Briefcase, Calendar, CheckSquare, ChevronDown, Cloud, Code, Database, Download, ExternalLink, Layers, Mail, Map, MapPin, Menu, Moon, Send, Settings, Star, Sun, Terminal, X } from 'lucide-react';
+import { ArrowRight, Briefcase, Calendar, CheckSquare, ChevronDown, Cloud, Code, Database, Download, ExternalLink, Globe, HelpCircle, Layers, Mail, Map, MapPin, Menu, Moon, Send, Settings, Star, Sun, Terminal, TestTube, X } from 'lucide-react';
 
 // ── Utility ─────────────────────────────────────────────────────────────────
 const useVisible = (ref) => {
@@ -147,8 +147,8 @@ const Hero = ({ data }) => (
         </p>
         <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start animate-fade-in">
           <a
-            href="/resume.pdf" // 1. Path to your actual resume file
-            download="My_Resume.pdf" // 2. Forces download and sets the filename
+            href="/notice.pdf" // 1. Path to your actual resume file
+            download="Charles_Osango.pdf" // 2. Forces download and sets the filename
             className="flex items-center text-xs gap-2 px-6 py-3 bg-gray-300 text-gray-900 rounded-xl hover:bg-gray-100 transition-colors"
           >
             <Download size={16} /> Download Resume
@@ -183,12 +183,11 @@ const Hero = ({ data }) => (
             {[
               { label: 'Projects', value: data.home.metrics.projectsCompleted },
               { label: 'Years Exp', value: data.home.metrics.yearsExperience },
-              { label: 'OSS Contribs', value: data.home.metrics.openSourceContribs },
               { label: 'Clients', value: data.home.metrics.happyClients },
             ].map(({ label, value }) => (
               <div key={label} className="text-center">
-                <div className="text-3xl font-black text-gray-900 dark:text-gray-300">{value}+</div>
-                <div className="text-xs text-gray-600 dark:text-gray-300 font-semibold mt-0.5">{label}</div>
+                <div className="text-2xl font-black text-gray-900 dark:text-gray-300">{value}+</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300 font-semibold mt-0.5">{label}</div>
               </div>
             ))}
           </div>
@@ -412,51 +411,40 @@ const ExperienceSection = ({ experiences = [] }) => {
 };
 
 // ── SKILLS ────────────────────────────────────────────────────────────────────
+// 1. Only map icons to category names. 
+// If a category from the DB isn't here, it gracefully uses a default icon.
+const CATEGORY_ICONS = {
+  'programming languages': Terminal,
+  'devops & tools': Settings,
+  'javascript libraries & frameworks': Layers,
+  'web frameworks': Globe,
+  'backend as a service': Cloud,
+  'databases': Database,
+  'testing': TestTube,
+};
+
 const SkillsSection = ({ skills = [] }) => {
-  // 1. Fixed structure: Mapping semantic category names to their respective icons
-  const CATEGORIES = [
-    { icon: Terminal, name: 'Programming Languages' },
-    { icon: Settings, name: 'DevOps & Tools' },
-    { icon: Layers, name: 'JavaScript Libraries & Frameworks' },
-    { icon: Database, name: 'Web Frameworks' },
-    { icon: Cloud, name: 'Backend as a Service' },
-    { icon: CheckSquare, name: 'Testing' },
-    { icon: Database, name: 'Databases' }
-  ];
+  // 2. Dynamically group skills based on whatever categories come from the database
+  const grouped = skills.reduce((acc, skill) => {
+    if (!skill.category) return acc;
+    
+    const rawCategory = skill.category;
+    const normalizedKey = rawCategory.toLowerCase().trim();
 
-  // 2. High-performance precise array reduction & string normalization 
-  const grouped = CATEGORIES.reduce((acc, cat) => {
-    const targetCat = cat.name.toLowerCase().trim();
-
-    const matchingSkills = skills.filter((sk) => {
-      if (!sk.category) return false;
-      const dbCat = String(sk.category).toLowerCase().trim();
-      return dbCat === targetCat || targetCat.includes(dbCat) || dbCat.includes(targetCat);
-    });
-
-    if (matchingSkills.length > 0) {
-      acc[cat.name] = {
-        icon: cat.icon,
-        items: matchingSkills,
+    if (!acc[normalizedKey]) {
+      acc[normalizedKey] = {
+        displayName: rawCategory, // Keeps the original casing from DB (e.g., "Web Frameworks")
+        Icon: CATEGORY_ICONS[normalizedKey] || HelpCircle, // Fallback icon if not matched
+        items: []
       };
     }
+
+    acc[normalizedKey].items.push(skill);
     return acc;
   }, {});
 
-  // 3. Fallback tracking: Catch outliers without erasing data from viewport
-  const matchedSkillIds = new Set(
-    Object.values(grouped).flatMap((group) => group.items.map((s) => s._id))
-  );
-  const remainingSkills = skills.filter((sk) => !matchedSkillIds.has(sk._id));
-
-  if (remainingSkills.length > 0) {
-    grouped['Other Skills'] = {
-      icon: Terminal,
-      items: remainingSkills
-    };
-  }
-
-  const hasGroupedData = Object.keys(grouped).length > 0;
+  const groupedEntries = Object.values(grouped);
+  const hasGroupedData = groupedEntries.length > 0;
 
   return (
     <section id="skills" className="py-24 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
@@ -470,42 +458,39 @@ const SkillsSection = ({ skills = [] }) => {
           </p>
         </div>
 
-        {/* Grid Layout matching the design specs */}
+        {/* Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {hasGroupedData ? (
-            Object.entries(grouped).map(([categoryName, data]) => {
-              const Icon = data.icon;
-              return (
-                <div
-                  key={categoryName}
-                  className="bg-white dark:bg-zinc-900/50 backdrop-blur-sm rounded-2xl border border-zinc-200 dark:border-zinc-800/80 p-6 flex flex-col justify-between shadow-sm dark:shadow-none"
-                >
-                  <div>
-                    {/* Category Title & Icon */}
-                    <div className="flex items-center gap-2.5 mb-5">
-                      <Icon size={18} className="text-zinc-500 dark:text-zinc-400" />
-                      <h3 className="text-base font-semibold tracking-wide text-zinc-800 dark:text-zinc-200">
-                        {categoryName}
-                      </h3>
-                    </div>
+            groupedEntries.map(({ displayName, Icon, items }) => (
+              <div
+                key={displayName}
+                className="bg-white dark:bg-zinc-900/50 backdrop-blur-sm rounded-2xl border border-zinc-200 dark:border-zinc-800/80 p-6 flex flex-col justify-between shadow-sm dark:shadow-none"
+              >
+                <div>
+                  {/* Category Title & Icon */}
+                  <div className="flex items-center gap-2.5 mb-5">
+                    <Icon size={18} className="text-zinc-500 dark:text-zinc-400" />
+                    <h3 className="text-base font-semibold tracking-wide text-zinc-800 dark:text-zinc-200">
+                      {displayName}
+                    </h3>
+                  </div>
 
-                    {/* Skill Badges Layout */}
-                    <div className="flex flex-wrap gap-2">
-                      {data.items.map((skill) => (
-                        <span
-                          key={skill._id || skill.name}
-                          className="px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg text-xs font-medium border border-zinc-200 dark:border-zinc-700/40 hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors duration-200"
-                        >
-                          {skill.name}
-                        </span>
-                      ))}
-                    </div>
+                  {/* Skill Badges Layout */}
+                  <div className="flex flex-wrap gap-2">
+                    {items.map((skill) => (
+                      <span
+                        key={skill._id || skill.name}
+                        className="px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg text-xs font-medium border border-zinc-200 dark:border-zinc-700/40 hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors duration-200"
+                      >
+                        {skill.name}
+                      </span>
+                    ))}
                   </div>
                 </div>
-              );
-            })
+              </div>
+            ))
           ) : (
-            /* Emergency Fallback UI rendering if your dynamic input object arrays are entirely empty */
+            /* Emergency Fallback UI rendering if your dynamic input arrays are entirely empty */
             <div className="col-span-full bg-white dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
               <div className="flex flex-wrap gap-2">
                 {skills.map((skill) => (
@@ -525,7 +510,6 @@ const SkillsSection = ({ skills = [] }) => {
     </section>
   );
 };
-
 // ── CONTACT ───────────────────────────────────────────────────────────────────
 const ContactSection = ({ contact }) => {
   const [form, setForm] = useState({ senderName: '', senderEmail: '', subject: '', message: '' });

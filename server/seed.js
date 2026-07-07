@@ -30,17 +30,18 @@ const seed = async () => {
     console.log("Seeding database with new data...")
     // Admin user
     await User.create({
-      name: 'Alex Rivers',
-      email: 'admin@portfolio.dev',
-      password: 'Admin@1234',
+      name: 'Charles Osango',
+      email: 'charlesosango02@gmail.com',
+      password: 'Access@1234',
       role: 'admin',
+      avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaO6gV9aR7GQpLl1c51naHXUlzRPIdbEfrtVKJZu8gmD1zqPtpDPUwNAQ&s=10',
     });
 
     // Home content
     await HomeContent.create({
       mainHeadline: "Hello, I'm Charles Osango",
       subHeadline: 'I am a Full-Stack Developer with a passion for building high-performance, scalable, and user-friendly web applications. I specialize in the MERN stack, but I am also proficient in a wide range of other technologies and frameworks.',
-      resumeFile: 'resume.pdf',
+      resumeFile: '/notice.pdf',
       isAvailable: true,
       metrics: { projectsCompleted: 20, yearsExperience: 3, happyClients: 15 },
       portfolioViews: 500,
@@ -163,64 +164,49 @@ const seed = async () => {
       },
     ]);
 
-    // // Skills
-    // await Skill.create([
-    //   { name: 'React', category: 'Frontend', proficiency: 95, order: 1 },
-    //   { name: 'TypeScript', category: 'Frontend', proficiency: 90, order: 2 },
-    //   { name: 'Vue.js', category: 'Frontend', proficiency: 80, order: 3 },
-    //   { name: 'Node.js', category: 'Backend', proficiency: 92, order: 1 },
-    //   { name: 'Rust', category: 'Backend', proficiency: 75, order: 2 },
-    //   { name: 'Python', category: 'Backend', proficiency: 85, order: 3 },
-    //   { name: 'MongoDB', category: 'Database', proficiency: 88, order: 1 },
-    //   { name: 'PostgreSQL', category: 'Database', proficiency: 83, order: 2 },
-    //   { name: 'Redis', category: 'Database', proficiency: 78, order: 3 },
-    //   { name: 'Docker', category: 'DevOps', proficiency: 87, order: 1 },
-    //   { name: 'AWS', category: 'DevOps', proficiency: 82, order: 2 },
-    //   { name: 'Kubernetes', category: 'DevOps', proficiency: 72, order: 3 },
-    // ]);
-
     // Skills
     await Skill.create([
       // Programming Languages
-      { name: 'JavaScript', category: 'Programming Languages', order: 1 },
-      { name: 'TypeScript', category: 'Programming Languages', order: 2 },
-      { name: 'SQL', category: 'Programming Languages', order: 3 },
-      { name: 'PHP', category: 'Programming Languages', order: 4 },
-      { name: 'HCL', category: 'Programming Languages', order: 5 },
+      { name: 'JavaScript', category: 'Programming Languages' },
+      { name: 'TypeScript', category: 'Programming Languages' },
+      { name: 'SQL', category: 'Programming Languages' },
+      { name: 'PHP', category: 'Programming Languages' },
+      { name: 'HCL', category: 'Programming Languages' },
 
       // DevOps & Tools
-      { name: 'Docker', category: 'DevOps & Tools', order: 1 },
-      { name: 'Git', category: 'DevOps & Tools', order: 2 },
-      { name: 'VIM', category: 'DevOps & Tools', order: 3 },
-      { name: 'NeoVim', category: 'DevOps & Tools', order: 4 },
-      { name: 'Kubernetes', category: 'DevOps & Tools', order: 5 },
-      { name: 'Agile', category: 'DevOps & Tools', order: 6 },
-      { name: 'CI/CD with Jenkins', category: 'DevOps & Tools', order: 7 },
-      { name: 'Terraform', category: 'DevOps & Tools', order: 8 },
+      { name: 'Docker', category: 'DevOps & Tools' },
+      { name: 'Git', category: 'DevOps & Tools' },
+      { name: 'VIM', category: 'DevOps & Tools' },
+      { name: 'NeoVim', category: 'DevOps & Tools' },
+      { name: 'Kubernetes', category: 'DevOps & Tools' },
+      { name: 'Agile', category: 'DevOps & Tools' },
+      { name: 'CI/CD with Jenkins', category: 'DevOps & Tools' },
+      { name: 'Terraform', category: 'DevOps & Tools' },
 
       // JavaScript Libraries & Frameworks
-      { name: 'Node.js', category: 'JavaScript Libraries & Frameworks', order: 1 },
-      { name: 'React.js', category: 'JavaScript Libraries & Frameworks', order: 2 },
-      { name: 'Bun.js', category: 'JavaScript Libraries & Frameworks', order: 3 },
-      { name: 'Deno', category: 'JavaScript Libraries & Frameworks', order: 4 },
-      { name: 'Vanilla JS', category: 'JavaScript Libraries & Frameworks', order: 5 },
-      { name: 'Next.js', category: 'JavaScript Libraries & Frameworks', order: 6 },
+      { name: 'Node.js', category: 'JavaScript Libraries & Frameworks' },
+      { name: 'React.js', category: 'JavaScript Libraries & Frameworks' },
+      { name: 'Bun.js', category: 'JavaScript Libraries & Frameworks' },
+      { name: 'Deno', category: 'JavaScript Libraries & Frameworks' },
+      { name: 'Vanilla JS', category: 'JavaScript Libraries & Frameworks' },
+      { name: 'Next.js', category: 'JavaScript Libraries & Frameworks' },
 
       // Web Frameworks
-      { name: 'Express.js', category: 'Web Frameworks', order: 1 },
-      { name: 'Fastify', category: 'Web Frameworks', order: 2 },
+      { name: 'Express.js', category: 'Web Frameworks' },
+      { name: 'Fastify', category: 'Web Frameworks' },
 
       // Backend as a Service
-      { name: 'Firebase', category: 'Backend as a Service', order: 1 },
-      { name: 'Appwrite', category: 'Backend as a Service', order: 2 },
+      { name: 'Firebase', category: 'Backend as a Service' },
+      { name: 'Supabase', category: 'Backend as a Service' },
+      { name: 'Sanity.io', category: 'Backend as a Service' },
 
       // Databases
-      { name: 'PostgreSQL', category: 'Databases', order: 1 },
-      { name: 'MongoDB', category: 'Databases', order: 2 },
-      { name: 'Redis', category: 'Databases', order: 3 },
+      { name: 'PostgreSQL', category: 'Databases' },
+      { name: 'MongoDB', category: 'Databases' },
+      { name: 'Redis', category: 'Databases' },
 
       // Testing
-      { name: 'Jest', category: 'Testing', order: 1 }
+      { name: 'Jest', category: 'Testing' }
     ]);
 
     // Contact Seed
