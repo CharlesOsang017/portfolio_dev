@@ -546,8 +546,8 @@ const ContactSection = ({ contact }) => {
               {[
                 { icon: Mail, label: 'Email', value: contact?.email, href: `mailto:${contact?.email}` },
                 { icon: MapPin, label: 'Location', value: contact?.location },
-                { icon: FaLinkedin, label: 'LinkedIn', value: contact?.linkedinUrl, href: `https://${contact?.linkedinUrl}` },
-                { icon: FaGithub, label: 'GitHub', value: contact?.githubUrl, href: `https://${contact?.githubUrl}` },
+                { icon: FaLinkedin, label: 'LinkedIn', value: contact?.linkedinUrl, href: `${contact?.linkedinUrl}` },
+                { icon: FaGithub, label: 'GitHub', value: contact?.githubUrl, href: `${contact?.githubUrl}` },
               ].filter((i) => i.value).map(({ icon: Icon, label, value, href }) => (
                 <a key={label} href={href} target={href ? '_blank' : undefined} rel="noreferrer"
                   className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-all group">
