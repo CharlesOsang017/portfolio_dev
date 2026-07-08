@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
+import toast from 'react-hot-toast';
 
 const AuthContext = createContext(null);
 
@@ -26,8 +27,9 @@ const login = async (email, password) => {
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
       setToken(data.token);
+      toast.success(data?.message);
     } catch (err) {
-      return { message: err.response?.data?.message || 'Login failed' };
+      toast.error(err.response?.data?.message || err.message || 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -41,10 +43,9 @@ const register = async (name, email, password) => {
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
       setToken(data.token);
-      console.log('data', data);
-      // toast.success('Registration successful');
+      toast.success(data?.message);
     } catch (err) {
-      console.log(err.response?.data?.message || err.message ||  'Registration failed' );
+      toast.error(err.response?.data?.message || err.message ||  'Registration failed' );
     } finally {
       setLoading(false);
     }

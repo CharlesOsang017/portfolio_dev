@@ -3,7 +3,7 @@ import { Navigate, Link } from 'react-router-dom';
 import { Mail, Lock, User, Eye, EyeOff, Monitor } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import toast from 'react-hot-toast';
+
 
 const Register = () => {
   const { user, register} = useAuth();
@@ -17,20 +17,9 @@ const Register = () => {
   if (user) return <Navigate to="/admin" replace />;
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await register(name, email, password);
-      toast.success('Registration successful');
-      setLoading(false);
-      
-    } catch (err) {
-      toast.error(err.response?.data?.message || err.message ||  'Registration failed' );
-    }finally{
-      setLoading(false);
-    }
-    
-  };
+    e.preventDefault();     
+    await register(name, email, password);   
+};
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-950 flex flex-col items-center justify-center px-4 relative">

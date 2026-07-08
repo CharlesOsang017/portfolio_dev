@@ -5,12 +5,17 @@ import bcrypt from 'bcrypt';
 
 // Generate JWT Token
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 }
 
 // POST /api/auth/register
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
+  // Only Register when the email from .env is used
+  const allowedEmail = process.env.ADMIN_EMAIL;
+  if (email !== allowedEmail) {
+    return res.status(403).json({ message: 'Access denied: Only the admin email is allowed to register' });
+  }
   const userExists = await User.findOne({ email });
   if (userExists) {
     return res.status(400).json({ message: 'The email address is already taken' });
@@ -23,13 +28,13 @@ export const register = async (req, res) => {
 
 // POST /api/auth/login
 export const login = async (req, res) => {
-    const {email, password} = req.body;    
-    const user = await User.findOne({email});    
-    if (!user) return res.status(404).json({message: 'User not found'})
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-    if (!isPasswordValid) return res.status(400).json({message: 'Invalid password'})
-    const token = generateToken(user._id);
-    return res.status(200).json({message: 'Login successful', user, token})  
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ message: 'User not found' })
+  const isPasswordValid = await bcrypt.compare(password, user.password)
+  if (!isPasswordValid) return res.status(400).json({ message: 'Invalid password' })
+  const token = generateToken(user._id);
+  return res.status(200).json({ message: 'Login successful', user, token })
 }
 
 // GET /api/auth/me

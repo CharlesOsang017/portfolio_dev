@@ -3,7 +3,7 @@ import { Navigate, Link } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, Monitor } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import toast from 'react-hot-toast';
+
 
 const Login = () => {
   const { user, login } = useAuth();
@@ -17,16 +17,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    try {
-      await login(email, password);
-      toast.success('Login successful');
-    } catch (error) {
-      toast.error(error.responce?.data?.message || error.message || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
-
+    await login(email, password);
   };
 
   return (
