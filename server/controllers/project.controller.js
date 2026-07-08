@@ -18,37 +18,75 @@ export const getProjectById = async (req, res) => {
 
 // POST /api/projects
 export const createProject = async (req, res) => {
-    const { title, category, techStack, description, liveUrl, githubUrl, isFeatured, isInternal, isPublished } = req.body;
-    let {image} = req.body;
-    if(!title && !category && !description && !liveUrl && !githubUrl) {
-        return res.status(400).json({
-            message: 'At least title and category are required'
-        })
+    try {
+        const { 
+            title, 
+            category, 
+            techStack, 
+            description, 
+            liveUrl, 
+            githubUrl, 
+            isFeatured, 
+            isInternal, 
+            isPublished 
+        } = req.body;
+        
+        let { image } = req.body;
 
+        // 1. Refined Validation Check (Triggers if either required field is missing)
+        if (!title || !category) {
+            return res.status(400).json({
+                message: 'Both title and category are strictly required fields.'
+            });
+        }
+
+        // 2. Safe Tech Stack Parsing (Handles arrays or strings cleanly without throwing crashes)
+        let processedTechStack = [];
+        if (Array.isArray(techStack)) {
+            processedTechStack = techStack.map(t => String(t).trim());
+        } else if (typeof techStack === 'string' && techStack.trim() !== '') {
+            processedTechStack = techStack.split(',').map(t => t.trim());
+        }
+
+        // 3. Secure Cloudinary Media Upload
+        let imgUrl = '';
+        if (image) {
+            console.log("Uploading file attachment payload to Cloudinary...");
+            const uploadResponse = await cloudinary.uploader.upload(image, {
+                folder: "portfolio_Dev",
+                resource_type: "auto",
+            });
+            imgUrl = uploadResponse.secure_url;
+        }
+
+        // 4. Save Database Document Record
+        const project = new Project({
+            title,
+            category,
+            techStack: processedTechStack,
+            description: description || '',
+            liveUrl: liveUrl || '',
+            githubUrl: githubUrl || '',
+            isFeatured: !!isFeatured,
+            isInternal: !!isInternal,
+            isPublished: !!isPublished,
+            image: imgUrl
+        });
+
+        await project.save();
+        
+        // 5. Return success payload
+        return res.status(201).json(project);
+
+    } catch (error) {
+        // Captures errors gracefully so the server stays up and running
+        console.error("❌ BACKEND RUNTIME EXCEPTION:", error);
+        return res.status(500).json({
+            message: 'Internal Server Error encountered while generating project record.',
+            error: error.message
+        });
     }
-    let imgUrl;
-    if(image){
-        const uploadResponse = await cloudinary.uploader.upload(image, {
-            folder: "portfolio_Dev",
-            resource_type: "auto",
-        })
-        imgUrl = uploadResponse.secure_url;
-    }
-    const project = new Project({
-        title,
-        category,
-        techStack: techStack.split(',').map(t => t.trim()),
-        description,
-        liveUrl,
-        githubUrl,
-        isFeatured,
-        isInternal,
-        isPublished,
-        image: imgUrl
-    });
-    await project.save();
-    res.status(201).json(project);
-}
+};
 
 // PUT /api/projects/:id
 export const updateProject = async (req, res) => {
