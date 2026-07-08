@@ -1,21 +1,51 @@
 import Skill from "../models/Skill.js";
 
-export const allSkills = async(req, res)=>{ 
-        const skills = await Skill.find().sort({ category: 1, order: 1 });
-        res.json(skills);
-}
+// GET all skills
+export const allSkills = async (req, res) => { 
+  try {
+    const skills = await Skill.find().sort({ category: 1, order: 1 });
+    res.status(200).json(skills);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch skills", error: error.message });
+  }
+};
 
-export const createSkill = async(req, res) => {
+// CREATE a skill
+export const createSkill = async (req, res) => {
+  try {
     const skill = await Skill.create(req.body);
-    res.json(skill);
-}
+    res.status(201).json(skill);
+  } catch (error) {
+    res.status(400).json({ message: "Failed to create skill", error: error.message });
+  }
+};
 
-export const deleteSkill = async(req, res) => {
+// DELETE a skill
+export const deleteSkill = async (req, res) => {
+  try {
     const skill = await Skill.findByIdAndDelete(req.params.id);
-    res.json(skill);
-}
+    if (!skill) {
+      return res.status(404).json({ message: "Skill not found" });
+    }
+    res.status(200).json({ message: "Skill deleted successfully", skill });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete skill", error: error.message });
+  }
+};
 
-export const updateSkill = async(req, res) => {
-    const skill = await Skill.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    res.json(skill);
-}
+// UPDATE a skill
+export const updateSkill = async (req, res) => {
+  try {
+    const skill = await Skill.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true, runValidators: true }
+    );
+    if (!skill) {
+      return res.status(404).json({ message: "Skill not found" });
+    }
+    res.status(200).json(skill);
+  } catch (error) {
+    res.status(400).json({ message: "Failed to update skill", error: error.message });
+  }
+};

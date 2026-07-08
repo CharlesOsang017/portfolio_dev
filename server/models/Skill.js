@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-// Define valid categories in one place to avoid typos across your app
 const VALID_CATEGORIES = [
   'Programming Languages',
   'DevOps & Tools',
@@ -31,6 +30,10 @@ const skillSchema = new mongoose.Schema({
     type: String, 
     default: ''
   },
+  order: {
+    type: Number,
+    default: 0 
+  }
 }, { timestamps: true });
 
 const Skill = mongoose.model('Skill', skillSchema);

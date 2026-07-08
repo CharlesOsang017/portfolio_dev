@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit2, Check, X, RefreshCw, Terminal, Settings, Layers, Database, Cloud, CheckSquare } from 'lucide-react';
+import { Plus, Trash2, Edit2, Check, X, RefreshCw, Terminal, Settings, Layers, Layout, Database, Cloud, CheckSquare } from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 
-// Mirroring exact structure from the seed and frontend render views
+// Perfectly mirrored to match DB schema definitions with precise icon layout references
 const CATEGORY_MAP = [
   { name: 'Programming Languages', icon: Terminal },
   { name: 'DevOps & Tools', icon: Settings },
   { name: 'JavaScript Libraries & Frameworks', icon: Layers },
-  { name: 'Web Frameworks', icon: Database },
+  { name: 'Web Frameworks', icon: Layout },
   { name: 'Backend as a Service', icon: Cloud },
+  { name: 'Databases', icon: Database },
   { name: 'Testing', icon: CheckSquare }
 ];
 
@@ -70,7 +71,13 @@ const SkillRow = ({ skill, onUpdate, onDelete }) => {
     <div className="group flex items-center justify-between px-3 py-2 bg-zinc-100 dark:bg-zinc-800/60 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg text-xs font-medium border border-zinc-200/60 dark:border-zinc-700/40 transition-all duration-150">
       <span className="truncate pr-2">{skill.name}</span>
       <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
-        <button onClick={() => setEditing(true)} className="p-1 text-zinc-500 cursor-pointer dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+        <button 
+          onClick={() => {
+            setForm(skill); 
+            setEditing(true);
+          }} 
+          className="p-1 text-zinc-500 cursor-pointer dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+        >
           <Edit2 size={11} />
         </button>
         <button onClick={() => onDelete(skill._id)} className="p-1 text-zinc-400 cursor-pointer dark:text-zinc-500 hover:text-red-500 transition-colors">
@@ -111,14 +118,27 @@ const Skills = () => {
 
   const handleAdd = async () => {
     if (!newSkill.name.trim()) return;
+    
+    // Split input values by commas and clean spaces
+    const skillNames = newSkill.name.split(',').map(name => name.trim()).filter(name => name.length > 0);
+    
+    if (skillNames.length === 0) return;
+
     try {
-      const { data } = await api.post('/skills', newSkill);
-      setSkills([...skills, data]);
+      // Execute all postings concurrently
+      await Promise.all(
+        skillNames.map(name => 
+          api.post('/skills', { name, category: newSkill.category })
+        )
+      );
+      
+      fetchData();
       setNewSkill({ name: '', category: 'Programming Languages' });
       setAdding(false);
-      toast.success('Skill added successfully!');
-    } catch { 
-      toast.error('Failed to add skill'); 
+      toast.success(skillNames.length > 1 ? 'All skills added successfully!' : 'Skill added successfully!');
+    } catch (error) { 
+      const errMsg = error.response?.data?.error || 'Failed to add one or more skills';
+      toast.error(errMsg.includes('duplicate key') ? 'One of these skill names already exists!' : errMsg); 
     }
   };
 
@@ -144,6 +164,9 @@ const Skills = () => {
 
   if (loading) return <div className="flex items-center justify-center h-64"><RefreshCw size={24} className="animate-spin text-zinc-400" /></div>;
 
+  // Filter out any categories that have zero skills mapped to them
+  const visibleCategories = Object.entries(grouped).filter(([_, data]) => data.items.length > 0);
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
       
@@ -165,13 +188,13 @@ const Skills = () => {
       {/* Add Skill Box */}
       {adding && (
         <div className="bg-white dark:bg-zinc-900/60 backdrop-blur-sm rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5 mb-8 animate-fade-in shadow-sm">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-4">Append New Entry</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-4">Append New Entries</h3>
           <div className="flex flex-wrap gap-4 items-end">
             <div className="flex-1 min-w-[240px]">
-              <label className="block text-xs text-zinc-500 mb-1.5 font-medium">Skill Name</label>
+              <label className="block text-xs text-zinc-500 mb-1.5 font-medium">Skill Name(s)</label>
               <input
                 type="text"
-                placeholder="e.g. Go, GraphQL, AWS"
+                placeholder="Separate multiple with commas, e.g. Go, GraphQL, AWS"
                 value={newSkill.name}
                 onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
                 className="w-full px-3 py-2 text-sm rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white outline-none focus:border-zinc-400 dark:focus:border-zinc-500 transition-colors"
@@ -195,45 +218,48 @@ const Skills = () => {
       )}
 
       {/* Grid Match Rendering */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Object.entries(grouped).map(([categoryName, data]) => {
-          const Icon = data.icon;
-          return (
-            <div 
-              key={categoryName} 
-              className="bg-white dark:bg-zinc-900/50 backdrop-blur-sm rounded-2xl border border-zinc-200 dark:border-zinc-800/80 p-6 flex flex-col justify-between shadow-sm dark:shadow-none"
-            >
-              <div>
-                {/* Category Header */}
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex items-center gap-2.5">
-                    <Icon size={18} className="text-zinc-400 dark:text-zinc-500" />
-                    <h3 className="text-sm font-semibold tracking-wide text-zinc-800 dark:text-zinc-200">{categoryName}</h3>
+      {visibleCategories.length === 0 ? (
+        <div className="text-center py-12 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl">
+          <p className="text-sm text-zinc-400 italic">Your deck is empty. Open the panel above to append your skills.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {visibleCategories.map(([categoryName, data]) => {
+            const Icon = data.icon;
+            return (
+              <div 
+                key={categoryName} 
+                className="bg-white dark:bg-zinc-900/50 backdrop-blur-sm rounded-2xl border border-zinc-200 dark:border-zinc-800/80 p-6 flex flex-col justify-between shadow-sm dark:shadow-none"
+              >
+                <div>
+                  {/* Category Header */}
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-2.5">
+                      <Icon size={18} className="text-zinc-400 dark:text-zinc-500" />
+                      <h3 className="text-sm font-semibold tracking-wide text-zinc-800 dark:text-zinc-200">{categoryName}</h3>
+                    </div>
+                    <span className="text-[10px] px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-400 rounded-full font-bold">
+                      {data.items.length}
+                    </span>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-400 rounded-full font-bold">
-                    {data.items.length}
-                  </span>
-                </div>
 
-                {/* Badges Layout Container */}
-                <div className="flex flex-wrap gap-2">
-                  {data.items.map((skill) => (
-                    <SkillRow 
-                      key={skill._id} 
-                      skill={skill} 
-                      onUpdate={handleUpdate} 
-                      onDelete={handleDelete} 
-                    />
-                  ))}
-                  {data.items.length === 0 && (
-                    <p className="text-xs text-zinc-400 dark:text-zinc-600 italic py-2">No entries inside this sector.</p>
-                  )}
+                  {/* Badges Layout Container */}
+                  <div className="flex flex-wrap gap-2">
+                    {data.items.map((skill) => (
+                      <SkillRow 
+                        key={skill._id} 
+                        skill={skill} 
+                        onUpdate={handleUpdate} 
+                        onDelete={handleDelete} 
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
