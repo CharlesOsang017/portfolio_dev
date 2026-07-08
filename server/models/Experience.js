@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 const experienceSchema = new mongoose.Schema({
-  jobTitle: {
-    type: String,
+  jobTitle: { 
+    type: String, 
     required: true 
   },
   company: { 
@@ -25,9 +25,13 @@ const experienceSchema = new mongoose.Schema({
     type: Boolean, 
     default: false 
   },
-  responsibilities: [{
-    type: String
+  responsibilities: [{ 
+    type: String 
   }],
+  order: { 
+    type: Number, 
+    default: 0 
+  }
 }, { timestamps: true });
 
 const Experience = mongoose.model('Experience', experienceSchema);
