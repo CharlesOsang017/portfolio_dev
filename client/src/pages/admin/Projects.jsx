@@ -269,8 +269,8 @@ const Projects = () => {
 
   const [form, setForm] = useState(emptyFormState);
 
-  useEffect(() => { 
-    fetchData(); 
+  useEffect(() => {
+    fetchData();
     // Event listener to close the contextual menu when clicking outside
     const handleOutsideClick = () => setActiveMenuId(null);
     window.addEventListener('click', handleOutsideClick);
@@ -283,10 +283,10 @@ const Projects = () => {
       setProjects(projRes.data);
       updateStats(projRes.data, homeRes.data.portfolioViews);
       if (projRes.data.length > 0) setSelectedId(projRes.data[0]._id);
-    } catch { 
-      toast.error('Failed to load projects'); 
-    } finally { 
-      setLoading(false); 
+    } catch {
+      toast.error('Failed to load projects');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -311,7 +311,7 @@ const Projects = () => {
         setIsCreatingNew(false);
         updateStats(updatedProjects);
         toast.success('Project created successfully!');
-        
+
         // Complete structural fields clearing on creation success
         setForm(emptyFormState);
       } else {
@@ -321,9 +321,9 @@ const Projects = () => {
         updateStats(updatedProjects);
         toast.success('Project updated!');
       }
-    } catch (error) { 
+    } catch (error) {
       console.error(error);
-      toast.error(isCreatingNew ? 'Creation failed' : 'Update failed'); 
+      toast.error(isCreatingNew ? 'Creation failed' : 'Update failed');
     }
   };
 
@@ -336,8 +336,8 @@ const Projects = () => {
       updateStats(remaining);
       setSelectedId(remaining[0]?._id || null);
       toast.success('Deleted');
-    } catch { 
-      toast.error('Delete failed'); 
+    } catch {
+      toast.error('Delete failed');
     }
   };
 
@@ -375,7 +375,7 @@ const Projects = () => {
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
           { label: 'TOTAL PROJECTS', value: stats.total },
-          { label: 'PORTFOLIO VIEWS', value: stats.views >= 1000 ? `${(stats.views/1000).toFixed(1)}k` : stats.views },
+          { label: 'PORTFOLIO VIEWS', value: stats.views >= 1000 ? `${(stats.views / 1000).toFixed(1)}k` : stats.views },
           { label: 'FEATURED', value: stats.featured },
         ].map(({ label, value }) => (
           <div key={label} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4">
@@ -408,9 +408,10 @@ const Projects = () => {
       )}
 
       {/* Fetched Project List Table */}
+      {/* Added max height and auto overflow to trigger the scrollbar when needed */}
       {projects.length > 0 && (
-        <div className="mt-5 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+        <div className="mt-5 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 max-h-[450px] overflow-y-auto custom-scrollbar">
+          <div className="sticky top-0 bg-white dark:bg-gray-900 px-6 py-4 border-b border-gray-100 dark:border-gray-800 z-10">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">All Portfolio Projects</h3>
           </div>
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -430,9 +431,9 @@ const Projects = () => {
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${p.isPublished ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'}`}>
                     {p.isPublished ? 'Published' : 'Draft'}
                   </span>
-                  
+
                   {/* More Button Dropdown Action Controller */}
-                  <button 
+                  <button
                     onClick={(e) => {
                       e.stopPropagation();
                       setActiveMenuId(activeMenuId === p._id ? null : p._id);
@@ -444,7 +445,7 @@ const Projects = () => {
 
                   {/* Absolute Actions Dropdown Window Popout */}
                   {activeMenuId === p._id && (
-                    <div 
+                    <div
                       className="absolute right-0 top-8 w-36 bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl shadow-lg py-1 z-50 animate-fade-in"
                       onClick={(e) => e.stopPropagation()}
                     >
