@@ -21,24 +21,38 @@ const useVisible = (ref) => {
   return visible;
 };
 
-// Social links
-const links = [
-  {
-    name: 'GitHub',
-    url: 'https://github.com/your-username',
-    icon: <FaGithub className="w-5 h-5 text-zinc-800 dark:text-zinc-100 transition-colors" />,
-  },
-  {
-    name: 'LinkedIn',
-    url: 'https://linkedin.com/in/your-profile',
-    icon: <FaLinkedin className="w-5 h-5 text-zinc-800 dark:text-zinc-100 transition-colors" />,
-  },
-  {
-    name: 'Email',
-    url: 'mailto:your-email@example.com',
-    icon: <Mail className="w-5 h-5 text-zinc-800 dark:text-zinc-100 transition-colors" />,
-  },
-];
+const getDownloadableUrl = (url) => {
+  if (!url) return '';
+  if (!url.includes('cloudinary.com')) return url;
+  if (url.includes('fl_attachment')) return url;
+  // Inject fl_attachment for all Cloudinary delivery types (image, video, raw)
+  return url.replace('/upload/', '/upload/fl_attachment/');
+};
+
+// Downloads via our own backend proxy to avoid all browser CORS restrictions on cross-origin downloads
+const downloadFile = async (resumeUrl, filename = 'resume.pdf') => {
+  if (!resumeUrl) return;
+  try {
+    // Hit the server-side proxy — server fetches from Cloudinary and streams back
+    const response = await fetch('/api/home/resume/download');
+    if (!response.ok) throw new Error(`Server responded ${response.status}`);
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = objectUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(objectUrl);
+  } catch (err) {
+    console.error('Download failed:', err);
+    // Fallback: open Cloudinary URL directly in a new tab
+    window.open(getDownloadableUrl(resumeUrl), '_blank', 'noopener,noreferrer');
+  }
+};
+
+
 
 // ── Section Wrapper ──────────────────────────────────────────────────────────
 const Section = ({ id, children, className = '' }) => {
@@ -122,6 +136,7 @@ const Navbar = ({ isAvailable }) => {
 // ── HERO ─────────────────────────────────────────────────────────────────────
 const Hero = ({ data }) => (
 
+
   <section id="about" className="relative min-h-screen bg-zinc-50 dark:bg-black/70 flex items-center overflow-hidden">
     {/* Background glow */}
     <div className="absolute inset-0 pointer-events-none" />
@@ -146,40 +161,23 @@ const Hero = ({ data }) => (
           {data?.home?.subHeadline || 'Building extraordinary digital experiences.'}
         </p>
         <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start animate-fade-in">
-          <a
-            href="/notice.pdf" // 1. Path to your actual resume file
-            download="Charles_Osango.pdf" // 2. Forces download and sets the filename
-            className="flex items-center text-xs gap-2 px-6 py-3 bg-gray-300 text-gray-900 rounded-xl hover:bg-gray-100 transition-colors"
+          <button
+            onClick={() => downloadFile(data?.home?.resumeFile, 'Charles_Osango_Resume.pdf')}
+            disabled={!data?.home?.resumeFile}
+            className="flex items-center text-xs gap-2 px-6 py-3 bg-gray-300 text-gray-900 rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             <Download size={16} /> Download Resume
-          </a>
+          </button>
           <a href="#contact" className="flex items-center gap-2 px-6 py-3 bg-gray-300 text-gray-900 rounded-xl hover:bg-gray-100 transition-colors text-xs font-semibold">
             Get in Touch
             <FaAddressCard size={14} />
           </a>
         </div>
-        {/* Social Media links */}
-        <div className="my-4 -mb-6  flex items-center justify-center lg:justify-start gap-4 sm:gap-8">
-          <div className="flex items-center  gap-4 sm:gap-8">
-            {links.map((link, index) => (
-              <a
-                key={index}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={link.name}
-                className="group flex items-center justify-center w-10 h-10  text-zinc-950 dark:text-zinc-50 dark:bg-zinc-900  rounded-full text-xs font-medium border border-zinc-200 dark:border-zinc-700/40 hover:border-zinc-400 hover:bg-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-950 bg-transparent transition-all duration-300 ease-in-out"
-              >
-                {link.icon}
-              </a>
-            ))}
-          </div>
-        </div>
 
 
         {/* Metrics */}
         {data?.home?.metrics && (
-          <div className="flex flex-wrap justify-center lg:justify-start gap-6 mt-12 animate-fade-in">
+          <div className="flex flex-wrap justify-center lg:justify-start gap-6 mt-8 animate-fade-in">
             {[
               { label: 'Projects', value: data.home.metrics.projectsCompleted },
               { label: 'Years Exp', value: data.home.metrics.yearsExperience },
@@ -199,12 +197,12 @@ const Hero = ({ data }) => (
         <div className="relative w-64 h-64 lg:w-80 lg:h-80">
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 blur-2xl opacity-30 scale-105" />
           <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-white/20 shadow-2xl">
-            {data?.profileImage ? (
-              <img src={data.profileImage} alt="Profile" className="w-full h-full object-cover" />
+            {data?.home?.profileImage ? (
+              <img src={data?.home?.profileImage} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center">
                 <span className="text-7xl font-black text-white/20">
-                  {data?.mainHeadline?.[data?.mainHeadline?.indexOf("'") + 1] || 'A'}
+                  {data?.home?.mainHeadline?.[data?.home?.mainHeadline?.indexOf("'") + 1] || 'A'}
                 </span>
               </div>
             )}
@@ -214,7 +212,7 @@ const Hero = ({ data }) => (
     </div>
 
     {/* Scroll indicator */}
-    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-900 dark:text-gray-300 animate-bounce">
+    <div className="absolute cursor-pointer bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-900 dark:text-gray-300 animate-bounce">
       <ChevronDown size={20} />
     </div>
   </section>
@@ -427,7 +425,7 @@ const SkillsSection = ({ skills = [] }) => {
   // 2. Dynamically group skills based on whatever categories come from the database
   const grouped = skills.reduce((acc, skill) => {
     if (!skill.category) return acc;
-    
+
     const rawCategory = skill.category;
     const normalizedKey = rawCategory.toLowerCase().trim();
 

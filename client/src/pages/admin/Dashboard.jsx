@@ -16,7 +16,7 @@ const Dashboard = () => {
     subHeadline: '',
     isAvailable: true,
     profileImage: '',
-    resumeUrl: '', // Added resume url tracking
+    resumeFile: '', 
     metrics: { projectsCompleted: 0, yearsExperience: 0, openSourceContribs: 0, happyClients: 0 },
   });
   const [loading, setLoading] = useState(true);
@@ -24,7 +24,10 @@ const Dashboard = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [savedData, setSavedData] = useState(null);
   
-  // Separate refs for image and resume files
+  // Track files locally for form data submission on Save
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [resumeFile, setResumeFile] = useState(null);
+
   const fileInputRef = useRef(null);
   const resumeInputRef = useRef(null);
 
@@ -58,50 +61,68 @@ const Dashboard = () => {
     setHasChanges(true);
   };
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('file', file);
-    try {
-      const { data } = await api.post('/assets/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      handleChange('profileImage', data.url);
-      toast.success('Image uploaded!');
-    } catch {
-      toast.error('Upload failed');
-    }
-  };
-
-  // New handler for resume PDF files
-  const handleResumeUpload = async (e) => {
+  // Immediate Local Preview for Image
+  const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const { data } = await api.post('/assets/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      handleChange('resumeUrl', data.url);
-      toast.success('Resume uploaded!');
-    } catch {
-      toast.error('Resume upload failed');
-    }
+    setProfileImageFile(file);
+    // Create a local blob URL for instant UI preview
+    const previewUrl = URL.createObjectURL(file);
+    handleChange('profileImage', previewUrl);
+    toast.success('Image staging for upload!');
   };
+
+  // Immediate Local Preview for Resume
+  const handleResumeUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setResumeFile(file);
+    // Create a local blob URL for temporary reference/display name mapping
+    const previewUrl = URL.createObjectURL(file);
+    handleChange('resumeFile', previewUrl);
+    toast.success('Resume staging for upload!');
+  };
+
+  // Helper: convert a File object to a base64 data URL string
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      await api.put('/home', form);
-      setSavedData(form);
+      let updatedForm = { ...form };
+
+      // 1. Convert profile image File → base64, then include in JSON payload
+      if (profileImageFile) {
+        const base64Image = await fileToBase64(profileImageFile);
+        updatedForm.profileImage = base64Image; // backend reads req.body.profileImage
+      }
+
+      // 2. Convert resume File → base64, then include in JSON payload
+      if (resumeFile) {
+        const base64Resume = await fileToBase64(resumeFile);
+        updatedForm.resumeFile = base64Resume; // backend reads req.body.resumeFile
+      }
+
+      // 3. Save all content (text fields + base64 files) in a single JSON PUT
+      const { data: saved } = await api.put('/home', updatedForm);
+      
+      setForm(saved);
+      setSavedData(saved);
+      setProfileImageFile(null);
+      setResumeFile(null);
       setHasChanges(false);
       toast.success('Changes saved successfully!');
-    } catch {
-      toast.error('Failed to save');
+    } catch (err) {
+      console.error('Save failed:', err);
+      toast.error('Failed to save settings');
     } finally {
       setSaving(false);
     }
@@ -242,23 +263,23 @@ const Dashboard = () => {
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
           </div>
 
-          {/* NEW Resume Upload Section */}
+          {/* Resume Upload Section */}
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5">
             <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-3">Resume Document</h2>
             <div className="bg-gray-50 dark:bg-gray-800 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-3 flex flex-col items-center justify-center min-h-[120px]">
-              {form.resumeUrl ? (
+              {form.resumeFile ? (
                 <div className="flex flex-col items-center gap-2">
                   <FileText size={32} className="text-indigo-500" />
                   <span className="text-xs text-gray-900 dark:text-white font-medium text-center break-all px-2 line-clamp-1">
-                    {form.resumeUrl.split('/').pop()}
+                    {resumeFile ? resumeFile.name : form.resumeFile.split('/').pop()}
                   </span>
                   <a 
-                    href={form.resumeUrl} 
+                    href={form.resumeFile} 
                     target="_blank" 
                     rel="noreferrer" 
                     className="text-[11px] text-indigo-500 hover:underline"
                   >
-                    View Current Document
+                    View Current/Staged Document
                   </a>
                 </div>
               ) : (
@@ -273,7 +294,7 @@ const Dashboard = () => {
               onClick={() => resumeInputRef.current?.click()}
               className="w-full py-2 text-sm font-medium border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors"
             >
-              {form.resumeUrl ? 'Replace Resume' : 'Upload Resume'}
+              {form.resumeFile ? 'Replace Resume' : 'Upload Resume'}
             </button>
             <input 
               ref={resumeInputRef} 

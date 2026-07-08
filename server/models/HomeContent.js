@@ -9,6 +9,7 @@ const homeContentSchema = new mongoose.Schema({
   metrics: {
     projectsCompleted: { type: Number, default: 0 },
     yearsExperience: { type: Number, default: 0 },
+    openSourceContribs: { type: Number, default: 0 },
     happyClients: { type: Number, default: 0 },
   },
   portfolioViews: { type: Number, default: 0 },
