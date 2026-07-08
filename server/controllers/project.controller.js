@@ -1,4 +1,5 @@
 import Project from "../models/Project.js";
+import {v2 as cloudinary} from "cloudinary";
 
 // GET /api/projects (public)
 export const getPublicProjects = async (req, res) => {
@@ -17,10 +18,36 @@ export const getProjectById = async (req, res) => {
 
 // POST /api/projects
 export const createProject = async (req, res) => {
-    try {
-        const project = await Project.create(req.body);
-        res.status(201).json(project);
-    } catch (err) { res.status(500).json({ message: err.message }); }
+    const { title, category, techStack, description, liveUrl, githubUrl, isFeatured, isInternal, isPublished } = req.body;
+    let {image} = req.body;
+    if(!title && !category && !description && !liveUrl && !githubUrl) {
+        return res.status(400).json({
+            message: 'At least title and category are required'
+        })
+
+    }
+    let imgUrl;
+    if(image){
+        const uploadResponse = await cloudinary.uploader.upload(image, {
+            folder: "portfolio_Dev",
+            resource_type: "auto",
+        })
+        imgUrl = uploadResponse.secure_url;
+    }
+    const project = new Project({
+        title,
+        category,
+        techStack: techStack.split(',').map(t => t.trim()),
+        description,
+        liveUrl,
+        githubUrl,
+        isFeatured,
+        isInternal,
+        isPublished,
+        image: imgUrl
+    });
+    await project.save();
+    res.status(201).json(project);
 }
 
 // PUT /api/projects/:id

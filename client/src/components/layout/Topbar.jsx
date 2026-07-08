@@ -1,10 +1,12 @@
 import { Search, Bell, Globe, Sun, Moon, Menu } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const Topbar = ({ placeholder = 'Search...', onMenuToggle }) => {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const {user} = useAuth()
 
   return (
     <header className="sticky top-0 z-20 h-14 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center px-4 gap-4">
@@ -58,15 +60,10 @@ const Topbar = ({ placeholder = 'Search...', onMenuToggle }) => {
         </button>
 
         {/* Notifications */}
-        <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
-          <Bell size={18} className="text-gray-600 dark:text-gray-400" />
+        <button className="p-2 cursor-pointer rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
+          <Bell size={18} className="text-gray-600 dark:text-gray-400" title="Notifications"/>
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>
-
-        {/* Avatar */}
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold cursor-pointer">
-          A
-        </div>
+        </button>       
       </div>
     </header>
   );

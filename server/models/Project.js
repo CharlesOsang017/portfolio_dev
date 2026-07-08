@@ -20,7 +20,7 @@ const projectSchema = new mongoose.Schema({
     default: '',
     trim: true 
   },
-  heroImage: { 
+  image: { 
     type: String, 
     default: '' 
   },
