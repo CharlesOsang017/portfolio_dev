@@ -50,6 +50,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message});
 });
 
+// testing the api is running
+app.use('/', (req, res) => {
+  res.send('Server is reachable and live!');
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on port: http://localhost:${port}`);
