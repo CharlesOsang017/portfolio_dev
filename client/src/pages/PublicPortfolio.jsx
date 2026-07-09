@@ -24,11 +24,14 @@ const getDownloadableUrl = (url) => {
 };
 
 // Downloads via our own backend proxy to avoid all browser CORS restrictions on cross-origin downloads
+// Use the full API base URL so this works in production (client & server are on different domains)
+const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+
 const downloadFile = async (resumeUrl, filename = 'resume.pdf') => {
   if (!resumeUrl) return;
   try {
-    // Hit the server-side proxy — server fetches from Cloudinary and streams back
-    const response = await fetch('/api/home/resume/download');
+    // Hit the server-side proxy — server fetches from Cloudinary and buffers the response back
+    const response = await fetch(`${API_BASE}/home/resume/download`);
     if (!response.ok) throw new Error(`Server responded ${response.status}`);
     const blob = await response.blob();
     const objectUrl = URL.createObjectURL(blob);

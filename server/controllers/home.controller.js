@@ -1,8 +1,6 @@
 import HomeContent from "../models/HomeContent.js";
 import ViewLog from "../models/viewLog.model.js";
 import { v2 as cloudinary } from "cloudinary";
-import https from "https";
-import http from "http";
 
 /**
  * Helper to extract public ID from a Cloudinary URL.
@@ -159,17 +157,24 @@ export const downloadResume = async (req, res) => {
         }
 
         const fileUrl = content.resumeFile;
-        const protocol = fileUrl.startsWith('https') ? https : http;
 
-        protocol.get(fileUrl, (fileRes) => {
-            const contentType = fileRes.headers['content-type'] || 'application/pdf';
-            res.setHeader('Content-Type', contentType);
-            res.setHeader('Content-Disposition', 'attachment; filename="resume.pdf"');
-            fileRes.pipe(res);
-        }).on('error', (err) => {
-            console.error('Resume proxy fetch error:', err);
-            res.status(500).json({ message: 'Failed to fetch resume from storage.' });
-        });
+        // Use fetch + arrayBuffer so the entire file is buffered before sending.
+        // This is required on Vercel serverless — stream piping (https.get + pipe)
+        // can cause the function to return before the stream finishes, resulting in
+        // an empty or truncated download in production.
+        const fileRes = await fetch(fileUrl);
+        if (!fileRes.ok) {
+            return res.status(502).json({ message: 'Failed to fetch resume from storage.' });
+        }
+
+        const arrayBuffer = await fileRes.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        const contentType = fileRes.headers.get('content-type') || 'application/pdf';
+        res.setHeader('Content-Type', contentType);
+        res.setHeader('Content-Disposition', 'attachment; filename="resume.pdf"');
+        res.setHeader('Content-Length', buffer.length);
+        res.end(buffer);
     } catch (err) {
         console.error('downloadResume error:', err);
         res.status(500).json({ message: err.message });
