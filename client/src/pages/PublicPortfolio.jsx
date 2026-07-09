@@ -650,8 +650,8 @@ const ContactSection = ({ contact }) => {
 // ── FOOTER ─────────────────────────────────────────────────────────────────
 const Footer = ({ contact }) => {
   // Gracefully fallback to generic strings if dynamic contact properties aren't loaded
-  const developerName = contact?.name || "John Developer";
-  const developerTitle = contact?.title || "Senior Software Engineer | Full-Stack Developer | DevOps Enthusiast";
+  const developerName = contact?.name || "Charles Osango";
+  const developerTitle = contact?.title || "Software Engineer | Full-Stack Developer | MERN Stack Developer";
 
   return (
     <footer className="bg-zinc-50 dark:bg-black text-gray-400 py-10">
