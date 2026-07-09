@@ -17,12 +17,12 @@ export const contacts = async (req, res) => {
 export const contactUpdate = async (req, res) => {
     try {
         const updatedContact = await Contact.findOneAndUpdate(
-            {},                  // Empty filter matches the first/only document
-            { $set: req.body },  // Updates fields passed in the request body
+            {},                  
+            { $set: req.body }, 
             { 
-                new: true,       // Return the modified document instead of the original
-                upsert: true,    // Create it if it doesn't exist
-                runValidators: true // Ensures req.body adheres to your schema schema (like enum values)
+                new: true,       
+                upsert: true,    
+                runValidators: true 
             }
         );
 

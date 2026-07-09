@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const { protect } = require('../middleware/auth');
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { protect } from '../middleware/auth.js';
 
 const uploadDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });

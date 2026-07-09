@@ -4,7 +4,6 @@ import cors from 'cors';
 import { connectToDb } from './config/db.js';
 import {v2 as cloudinary} from 'cloudinary'
 
-
 import authRoutes from './routes/auth.router.js';
 import homeRoutes from './routes/home.route.js';
 import projectRoutes from './routes/project.route.js';
@@ -13,9 +12,13 @@ import skillRoutes from './routes/skill.route.js';
 import contactRoutes from './routes/contact.route.js';
 import inquiryRoutes from './routes/inquiry.route.js';
 
+// Connect to DB at module load (critical for Vercel serverless)
+connectToDb().catch((err) => {
+  console.error('Initial DB connection failed:', err.message);
+});
 
 const app = express();
-const port = process.env.PORT
+const port = process.env.PORT;
 // Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
@@ -50,13 +53,16 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message});
 });
 
-// testing the api is running
+// Health check / root
 app.use('/', (req, res) => {
   res.send('Server is reachable and live!');
 });
 
+// Start server (local dev only — Vercel ignores listen())
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(port, () => {
+    console.log(`Server is running on port: http://localhost:${port}`);
+  });
+}
 
-app.listen(port, () => {
-  console.log(`Server is running on port: http://localhost:${port}`);
-  connectToDb()
-});
+export default app;

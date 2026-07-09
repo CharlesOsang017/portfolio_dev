@@ -1,14 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { FaAddressCard, FaGithub, FaLinkedin } from 'react-icons/fa';
-import { IoIosSend } from "react-icons/io";
-import { FaFax } from "react-icons/fa";
-
-
-import { FiExternalLink, FiMail, FiMapPin } from "react-icons/fi";
-import { CiMenuBurger } from "react-icons/ci";
 import api from '../services/api';
 import { useTheme } from '../context/ThemeContext';
-import { ArrowRight, Briefcase, Calendar, CheckSquare, ChevronDown, Cloud, Code, Database, Download, ExternalLink, Globe, HelpCircle, Layers, Mail, Map, MapPin, Menu, Moon, Send, Settings, Star, Sun, Terminal, TestTube, X } from 'lucide-react';
+import {Briefcase, Calendar, ChevronDown, Cloud, Code, Database, Download, ExternalLink, Globe, HelpCircle, Layers, Mail, MapPin, Menu, Moon, Send, Settings, Star, Sun, Terminal, TestTube, X } from 'lucide-react';
 
 // ── Utility ─────────────────────────────────────────────────────────────────
 const useVisible = (ref) => {
