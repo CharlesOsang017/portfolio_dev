@@ -151,7 +151,7 @@ const Hero = ({ data }) => (
             <span className="text-xs font-semibold text-green-500 uppercase tracking-widest">Available for Work</span>
           </div>
         )}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-5xl font-black text-gray-800 dark:text-gray-300 leading-tight mb-6 animate-fade-in">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-4xl font-black text-gray-800 dark:text-gray-300 leading-tight mb-6 animate-fade-in">
           {data?.home?.mainHeadline || "Hello, I'm a Developer"}
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 animate-fade-in">
