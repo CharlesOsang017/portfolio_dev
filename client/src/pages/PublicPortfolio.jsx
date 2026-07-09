@@ -423,7 +423,8 @@ const CATEGORY_ICONS = {
 
 const SkillsSection = ({ skills = [] }) => {
   // 2. Dynamically group skills based on whatever categories come from the database
-  const grouped = skills.reduce((acc, skill) => {
+  const safeSkills = Array.isArray(skills) ? skills : [];
+  const grouped = safeSkills.reduce((acc, skill) => {
     if (!skill.category) return acc;
 
     const rawCategory = skill.category;
@@ -491,7 +492,7 @@ const SkillsSection = ({ skills = [] }) => {
             /* Emergency Fallback UI rendering if your dynamic input arrays are entirely empty */
             <div className="col-span-full bg-white dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
               <div className="flex flex-wrap gap-2">
-                {skills.map((skill) => (
+                {safeSkills.map((skill) => (
                   <span
                     key={skill._id || skill.name}
                     className="px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg text-xs font-medium"
@@ -697,9 +698,9 @@ const PublicPortfolio = () => {
         ]);
         setData({
           home: homeRes.data,
-          projects: projRes.data,
-          experiences: expRes.data,
-          skills: skillRes.data,
+          projects: Array.isArray(projRes.data) ? projRes.data : [],
+          experiences: Array.isArray(expRes.data) ? expRes.data : [],
+          skills: Array.isArray(skillRes.data) ? skillRes.data : [],
           contact: contactRes.data,
         });
         // Track portfolio view

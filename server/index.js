@@ -58,8 +58,5 @@ app.use('/', (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running on port: http://localhost:${port}`);
-  console.log('cloudname: ', process.env.CLOUDINARY_CLOUD_NAME);
-  console.log('api key: ', process.env.CLOUDINARY_API_KEY);
-  console.log('api secret: ', process.env.CLOUDINARY_API_SECRET);
   connectToDb()
 });
