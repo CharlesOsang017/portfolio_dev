@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit2, Check, X, RefreshCw, Terminal, Settings, Layers, Layout, Database, Cloud, CheckSquare } from 'lucide-react';
+import { Plus, Trash2, Edit2, Check, X, RefreshCw, Settings, Layers, Database, Cloud, Component, TestTube } from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 
 // Perfectly mirrored to match DB schema definitions with precise icon layout references
 const CATEGORY_MAP = [
-  { name: 'Programming Languages', icon: Terminal },
   { name: 'DevOps & Tools', icon: Settings },
   { name: 'JavaScript Libraries & Frameworks', icon: Layers },
-  { name: 'Web Frameworks', icon: Layout },
   { name: 'Backend as a Service', icon: Cloud },
   { name: 'Databases', icon: Database },
-  { name: 'Testing', icon: CheckSquare }
+  { name: 'Styling UI Components', icon: Component },
+  { name: 'Testing', icon: TestTube }
 ];
 
 const CATEGORIES = CATEGORY_MAP.map(c => c.name);
@@ -92,7 +91,7 @@ const Skills = () => {
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
-  const [newSkill, setNewSkill] = useState({ name: '', category: 'Programming Languages' });
+  const [newSkill, setNewSkill] = useState({ name: '', category: 'DevOps & Tools' });
 
   useEffect(() => { fetchData(); }, []);
 
@@ -133,7 +132,7 @@ const Skills = () => {
       );
       
       fetchData();
-      setNewSkill({ name: '', category: 'Programming Languages' });
+      setNewSkill({ name: '', category: 'DevOps & Tools' });
       setAdding(false);
       toast.success(skillNames.length > 1 ? 'All skills added successfully!' : 'Skill added successfully!');
     } catch (error) { 

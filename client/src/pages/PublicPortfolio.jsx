@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FaAddressCard, FaGithub, FaLinkedin } from 'react-icons/fa';
 import api from '../services/api';
 import { useTheme } from '../context/ThemeContext';
-import {Briefcase, Calendar, ChevronDown, Cloud, Code, Database, Download, ExternalLink, Globe, HelpCircle, Layers, Mail, MapPin, Menu, Moon, Send, Settings, Star, Sun, Terminal, TestTube, X } from 'lucide-react';
+import {Briefcase, Calendar, ChevronDown, Cloud, Code, Component, Database, Download, ExternalLink, Globe, HelpCircle, Layers, Mail, MapPin, Menu, Moon, Send, Settings, Star, Sun, Terminal, TestTube, X } from 'lucide-react';
 
 // ── Utility ─────────────────────────────────────────────────────────────────
 const useVisible = (ref) => {
@@ -409,12 +409,11 @@ const ExperienceSection = ({ experiences = [] }) => {
 // 1. Only map icons to category names. 
 // If a category from the DB isn't here, it gracefully uses a default icon.
 const CATEGORY_ICONS = {
-  'programming languages': Terminal,
   'devops & tools': Settings,
   'javascript libraries & frameworks': Layers,
-  'web frameworks': Globe,
   'backend as a service': Cloud,
   'databases': Database,
+  'styling ui components': Component,
   'testing': TestTube,
 };
 
@@ -713,12 +712,12 @@ const PublicPortfolio = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen hero-gradient flex items-center justify-center">
+      <div className="dark:bg-gray-900 bg-white min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center animate-pulse">
             <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400" />
           </div>
-          <p className="text-white/60 text-sm">Loading portfolio...</p>
+          <p className="text-black/60 dark:text-white/60 text-sm">Loading Portfolio, please wait ...</p>
         </div>
       </div>
     );

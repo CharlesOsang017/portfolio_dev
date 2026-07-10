@@ -1,18 +1,17 @@
 import mongoose from 'mongoose';
 
 const VALID_CATEGORIES = [
-  'Programming Languages',
-  'DevOps & Tools',
   'JavaScript Libraries & Frameworks',
-  'Web Frameworks',
   'Backend as a Service',
+  'Styling UI Components',
   'Databases',
-  'Testing'
+  'DevOps & Tools',
+  'Testing',
 ];
 
 const skillSchema = new mongoose.Schema({
-  name: { 
-    type: String, 
+  name: {
+    type: String,
     required: [true, 'Skill name is required'],
     trim: true,
     unique: true,
@@ -24,7 +23,7 @@ const skillSchema = new mongoose.Schema({
       values: VALID_CATEGORIES,
       message: '{VALUE} is not a valid skill category'
     },
-    default: 'Programming Languages' 
+    default: 'JavaScript Libraries & Frameworks' 
   },
   icon: { 
     type: String, 
