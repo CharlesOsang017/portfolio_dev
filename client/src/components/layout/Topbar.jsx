@@ -32,7 +32,7 @@ const Topbar = ({ placeholder = 'Search...', onMenuToggle }) => {
         {/* Preview Site */}
         <button
           onClick={() => navigate('/')}
-          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          className="hidden cursor-pointer sm:flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
         >
           <Globe size={14} />
           Preview Site
@@ -63,7 +63,7 @@ const Topbar = ({ placeholder = 'Search...', onMenuToggle }) => {
         <button className="p-2 cursor-pointer rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
           <Bell size={18} className="text-gray-600 dark:text-gray-400" title="Notifications"/>
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>       
+        </button>
       </div>
     </header>
   );
